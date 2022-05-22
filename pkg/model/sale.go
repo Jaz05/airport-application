@@ -5,9 +5,10 @@ import (
 )
 
 type Sale struct {
-	Id        int
-	Passenger Passenger
-	Seat      Seat
-	Price     float32
-	Date      time.Time
+	Id              int
+	Passenger       Passenger
+	Seat            Seat
+	Price           float32
+	SaleDate        time.Time
+	ReservationDate time.Time
 }
