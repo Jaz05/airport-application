@@ -9,6 +9,6 @@ type Flight struct {
 	Capacity  int
 	BasePrice float32
 	Date      time.Time
-	Destination Place
 	Origin    Place
+	Destination Place
 }
