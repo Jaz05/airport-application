@@ -1,5 +1,46 @@
 # airport-application
 
+
+## Pasos para levantar la aplicacion
+
+### Instalar GO
+
+https://go.dev/doc/install
+
+En Ubuntu 20.04
+
+``$ sudo apt update``
+``$ sudo apt install golang``
+
+### Instalar MySQL
+
+https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/
+
+En Ubuntu 20.04
+
+``$ sudo apt update``
+``$ sudo apt install mysql-server``
+
+
+### Levantar base de datos con los vuelos precargados
+
+Abrir consola mysql
+
+``sudo mysql ``
+
+Crear base de datos 
+
+``mysql>  create database airport``
+
+Permitir que agrege tablas
+
+``mysql>  use airport``
+
+Correr script "TODO.sql" para cargar las tablas de la base de datos
+
+``mysql>  source /path/to/TODO.sql``
+
+
 ## Endpoint de ejemplo
 
 Descripcion del endpoint
