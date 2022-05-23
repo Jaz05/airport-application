@@ -1,5 +1,7 @@
 package model
 
+import "gorm.io/gorm"
+
 type SeatStatus string
 
 const (
@@ -9,9 +11,11 @@ const (
 )
 
 type Seat struct {
-	Id           int
+	gorm.Model
+	FlightID     int
 	Flight       Flight
 	SeatLocation string
+	TypeID       int
 	Type         SeatType
 	Status       SeatStatus
 }

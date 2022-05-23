@@ -1,6 +1,8 @@
 package model
 
+import "gorm.io/gorm"
+
 type Passenger struct {
-	Id            int
+	gorm.Model
 	Name, SurName string
 }

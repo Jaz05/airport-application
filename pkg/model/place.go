@@ -1,6 +1,8 @@
 package model
 
+import "gorm.io/gorm"
+
 type Place struct {
-	Id   int
+	gorm.Model
 	Name string
 }

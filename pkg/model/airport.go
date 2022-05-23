@@ -1,5 +1,9 @@
 package model
 
+import (
+	"gorm.io/gorm"
+)
+
 type AirportStatus string
 
 const (
@@ -8,8 +12,9 @@ const (
 )
 
 type Airport struct {
-	Id     int
-	Name   string
-	Place  Place
-	Status AirportStatus
+	gorm.Model
+	Name    string
+	PlaceID int
+	Place   Place
+	Status  AirportStatus
 }
