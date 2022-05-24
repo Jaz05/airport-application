@@ -11,9 +11,9 @@ const (
 type Seat struct {
 	ID           int `gorm:"primaryKey"`
 	FlightID     int
-	Flight       Flight `gorm:"foreignKey:ID;references:FlightID"`
+	Flight       Flight
 	SeatLocation string
 	TypeID       int
-	Type         SeatType `gorm:"foreignKey:ID;references:TypeID"`
+	Type         SeatType
 	Status       SeatStatus
 }

@@ -11,6 +11,6 @@ type Airport struct {
 	ID      int `gorm:"primaryKey"`
 	Name    string
 	PlaceID int
-	Place   Place `gorm:"foreignKey:ID;references:PlaceID"`
+	Place   Place
 	Status  AirportStatus
 }

@@ -7,9 +7,9 @@ import (
 type Sale struct {
 	ID              int `gorm:"primaryKey"`
 	PassengerID     int
-	Passenger       Passenger `gorm:"foreignKey:ID;references:PassengerID"`
+	Passenger       Passenger
 	SeatID          int
-	Seat            Seat `gorm:"foreignKey:ID;references:SeatID"`
+	Seat            Seat
 	Price           float32
 	SaleDate        time.Time
 	ReservationDate time.Time

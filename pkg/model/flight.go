@@ -10,7 +10,7 @@ type Flight struct {
 	BasePrice     float32
 	Date          time.Time
 	OriginID      int
-	Origin        Airport `gorm:"foreignKey:ID;references:OriginID"`
+	Origin        Airport
 	DestinationID int
-	Destination   Airport `gorm:"foreignKey:ID;references:DestinationID"`
+	Destination   Airport
 }
