@@ -1,7 +1,5 @@
 package model
 
-import "gorm.io/gorm"
-
 type SeatStatus string
 
 const (
@@ -11,11 +9,11 @@ const (
 )
 
 type Seat struct {
-	gorm.Model
+	ID           int `gorm:"primaryKey"`
 	FlightID     int
-	Flight       Flight
+	Flight       Flight `gorm:"foreignKey:ID;references:FlightID"`
 	SeatLocation string
 	TypeID       int
-	Type         SeatType
+	Type         SeatType `gorm:"foreignKey:ID;references:TypeID"`
 	Status       SeatStatus
 }

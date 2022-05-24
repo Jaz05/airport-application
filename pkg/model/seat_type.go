@@ -1,7 +1,5 @@
 package model
 
-import "gorm.io/gorm"
-
 type SeatCategory int
 
 const (
@@ -10,7 +8,7 @@ const (
 )
 
 type SeatType struct {
-	gorm.Model
+	ID         int `gorm:"primaryKey"`
 	Category   SeatCategory
 	Multiplier float32
 }

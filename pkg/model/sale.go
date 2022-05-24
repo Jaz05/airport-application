@@ -2,16 +2,14 @@ package model
 
 import (
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type Sale struct {
-	gorm.Model
+	ID              int `gorm:"primaryKey"`
 	PassengerID     int
-	Passenger       Passenger
+	Passenger       Passenger `gorm:"foreignKey:ID;references:PassengerID"`
 	SeatID          int
-	Seat            Seat
+	Seat            Seat `gorm:"foreignKey:ID;references:SeatID"`
 	Price           float32
 	SaleDate        time.Time
 	ReservationDate time.Time

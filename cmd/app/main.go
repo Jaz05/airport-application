@@ -8,14 +8,14 @@ import (
 
 func main() {
 	r := router.SetupRouter()
-	AutoMigrateDB()
+	autoMigrateDB()
 	r.Run(":8080")
 }
 
 //Create tables automatically
-func AutoMigrateDB() {
+func autoMigrateDB() {
 	db := database.GetClient()
 	if err := db.AutoMigrate(&model.Airport{}, &model.Flight{}, &model.Passenger{}, &model.Place{}, &model.Sale{}, &model.SeatType{}, &model.Seat{}); err != nil {
-		println(err)
+		println(err.Error())
 	}
 }

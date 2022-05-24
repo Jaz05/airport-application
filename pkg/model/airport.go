@@ -1,9 +1,5 @@
 package model
 
-import (
-	"gorm.io/gorm"
-)
-
 type AirportStatus string
 
 const (
@@ -12,9 +8,9 @@ const (
 )
 
 type Airport struct {
-	gorm.Model
+	ID      int `gorm:"primaryKey"`
 	Name    string
 	PlaceID int
-	Place   Place
+	Place   Place `gorm:"foreignKey:ID;references:PlaceID"`
 	Status  AirportStatus
 }
