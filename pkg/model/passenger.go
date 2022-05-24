@@ -1,6 +1,6 @@
 package model
 
 type Passenger struct {
-	Id            int
+	ID            int `gorm:"primaryKey"`
 	Name, SurName string
 }

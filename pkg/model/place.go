@@ -1,6 +1,6 @@
 package model
 
 type Place struct {
-	Id   int
+	ID   int `gorm:"primaryKey"`
 	Name string
 }

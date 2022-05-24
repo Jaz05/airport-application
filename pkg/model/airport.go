@@ -8,8 +8,9 @@ const (
 )
 
 type Airport struct {
-	Id     int
-	Name   string
-	Place  Place
-	Status AirportStatus
+	ID      int `gorm:"primaryKey"`
+	Name    string
+	PlaceID int
+	Place   Place
+	Status  AirportStatus
 }

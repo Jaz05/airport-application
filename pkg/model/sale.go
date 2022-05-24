@@ -5,8 +5,10 @@ import (
 )
 
 type Sale struct {
-	Id              int
+	ID              int `gorm:"primaryKey"`
+	PassengerID     int
 	Passenger       Passenger
+	SeatID          int
 	Seat            Seat
 	Price           float32
 	SaleDate        time.Time

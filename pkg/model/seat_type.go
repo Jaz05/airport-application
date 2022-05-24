@@ -8,6 +8,7 @@ const (
 )
 
 type SeatType struct {
-	Id         SeatCategory
+	ID         int `gorm:"primaryKey"`
+	Category   SeatCategory
 	Multiplier float32
 }

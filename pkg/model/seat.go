@@ -9,9 +9,11 @@ const (
 )
 
 type Seat struct {
-	Id           int
+	ID           int `gorm:"primaryKey"`
+	FlightID     int
 	Flight       Flight
 	SeatLocation string
+	TypeID       int
 	Type         SeatType
 	Status       SeatStatus
 }
