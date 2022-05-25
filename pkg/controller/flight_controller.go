@@ -8,3 +8,7 @@ import (
 func GetAllFlights() []model.Flight {
 	return service.GetAllFlights()
 }
+
+func GetAllFlightsByDestination(destination string) []model.Flight {
+	return service.GetAllFlightsByDestination(destination)
+}
