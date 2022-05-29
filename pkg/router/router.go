@@ -2,11 +2,20 @@ package router
 
 import (
 	"airport/pkg/controller"
+	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 var db = make(map[string]string)
+
+type saleRequestBody struct {
+	Name    string `json:"name"`
+	Surname string `json:"surname"`
+	Dni     int64  `json:"dni"`
+	SeatId  int64  `json:"seat_id"`
+}
 
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
@@ -20,10 +29,18 @@ func SetupRouter() *gin.Engine {
 		}
 	})
 
-	r.GET("/seats", func(c *gin.Context) {
-		origin := c.Request.URL.Query().Get("origin")
-		destination := c.Request.URL.Query().Get("destination")
-		c.JSON(200, controller.GetAllSeatssByDestination(origin, destination))
+	r.POST("/sales", func(c *gin.Context) {
+		var newSaleRequestBody saleRequestBody
+		if err := c.BindJSON(&newSaleRequestBody); err != nil {
+			return
+		}
+		seatId := strconv.Itoa(int(newSaleRequestBody.SeatId))
+		seat, err := controller.BookFlightSeat(seatId)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"message": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, seat)
 	})
 
 	return r
