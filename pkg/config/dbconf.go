@@ -24,7 +24,7 @@ func GetDBConfig() *DBConfig {
 	}
 	fmt.Println(path)
 	if config == nil {
-		loader.LoadConfig("../../config/database.yml", &config)
+		loader.LoadConfig("database.yml", &config)
 	}
 	return config
 }
