@@ -43,5 +43,11 @@ func SetupRouter() *gin.Engine {
 		c.JSON(http.StatusOK, seat)
 	})
 
+	r.GET("/seats", func(c *gin.Context) {
+		origin := c.Request.URL.Query().Get("origin")
+		destination := c.Request.URL.Query().Get("destination")
+		c.JSON(200, controller.GetAllSeatsByDestination(origin, destination))
+	})
+
 	return r
 }
