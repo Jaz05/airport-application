@@ -7,20 +7,56 @@
 	"item": [
 		{
 			"name": "seats",
+			"item": []
+		},
+		{
+			"name": "flights",
 			"item": [
 				{
-					"name": "localhost:8080/seats",
+					"name": "localhost:8080/flights",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/seats",
+							"raw": "localhost:8080/flights",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"seats"
+								"flights"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "sales",
+			"item": [
+				{
+					"name": "bookSeat",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"name\":\"Juan\",\n   \"surname\":\"adsd\",\n   \"dni\":1783612,\n   \"seat_id\":4\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/sales",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sales"
 							]
 						}
 					},

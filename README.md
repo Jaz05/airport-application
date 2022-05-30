@@ -23,6 +23,7 @@ En Ubuntu 20.04
 
 ``$ sudo apt install mysql-server``
 
+## Usar la aplicacion
 
 ### Levantar base de datos
 
@@ -30,51 +31,36 @@ Abrir consola mysql
 
 ``sudo mysql ``
 
-Crear base de datos 
-
-``mysql>  create database airport``
-
-## Usar la aplicacion
-
-Correr la aplicacion main.go para levantar las tablas.
-
-Dentro del directorio cmd/app
-
-``go run .``
-
-Ejecutar el script "load_data.sql" para cargar las tablas donde "/path/to" es el path absoluto al archivo. 
+Ejecutar el script "create_insert_tables.sql" para cargar las tablas donde "/path/to" es el path absoluto al archivo.
 
 Tambien podes usar una herramienta como mysql-workbench para ejecutar el script
 
-``mysql>  source /path/to/load_data.sql``
+``mysql>  source /path/to/create_insert_tables.sql``
 
-Al terminar con el programa dropear todas las tablas con el script "drop_tables.sql"
+**¡Importante!**
 
-``mysql>  source /path/to/drop_tables.sql``
+Se recomienda hacer este paso antes de cada nueva ejecucion para volver las tablas a su estado inicial
+
+### Levantar server
+
+Dentro del directorio cmd/app donde se encuentra main.go ejecutar
+
+``$ go run .``
 
 ## Endpoints
 
-### Titulo de un endpoint
+### Realizar reserva de un pasaje
 
-`POST http://localhost:8080/api/v1/booking`
+`POST http://localhost:8080/sales`
 
 <details>
 <summary>Request Body</summary>
 <pre>
 {
-    "nombreUsuario": "juan",
-    "booking": {
-        "desde": "2022-02-20",
-        "personas": [
-            {
-                "dni": 38998262,
-                "nombre": "juan",
-            }
-        ],
-        "metodoPago":{
-            "tipo": "CREDIT",
-        }
-    }
+   "name":"Juan",
+   "surname":"adsd",
+   "dni":1783612,
+   "seat_id":4
 }
 </pre>
 </details>
@@ -84,20 +70,7 @@ Al terminar con el programa dropear todas las tablas con el script "drop_tables.
 <summary>Response</summary>
 <pre>
 {
-	"id":1
-    "nombreUsuario": "juan",
-    "booking": {
-        "desde": "2022-02-20",
-        "personas": [
-            {
-                "dni": 38998262,
-                "nombre": "juan",
-            }
-        ],
-        "metodoPago":{
-            "tipo": "CREDIT",
-        }
-    }
+	"sale_id":
 }
 </pre>
 </details>
