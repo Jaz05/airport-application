@@ -7,12 +7,19 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-func GetAllSeatsByDestination(client *gorm.DB, origin string, destination string) []model.Seat {
+func GetAvailableSeatsByDestination(client *gorm.DB, origin string, destination string) []model.Seat {
 	var seats []model.Seat
 	client.Joins("inner join flights on flights.id = seats.flight_id").Where("flights.destination_id = ?", destination).Where("flights.origin_id = ?", origin).Where("seats.status = 'EMPTY'").Preload(clause.Associations).Find(&seats)
 	if len(seats) == 0 {
 		seats = getReservedSeatsByDestination(origin, destination, client)
 	}
+
+	return seats
+}
+
+func GetAllSeatsByDestination(client *gorm.DB, origin string, destination string) []model.Seat {
+	var seats []model.Seat
+	client.Joins("inner join flights on flights.id = seats.flight_id").Where("flights.destination_id = ?", destination).Where("flights.origin_id = ?", origin).Preload(clause.Associations).Find(&seats)
 
 	return seats
 }
