@@ -42,10 +42,26 @@ var getExpiredReservationSeats = func(seats []model.Seat, client *gorm.DB) []mod
 	return availalbleSeats
 }
 
+func UpdateExpiredReservedSeats(client *gorm.DB) {
+	var foundSales []model.Sale
+	client.Where("TIMESTAMPDIFF(MINUTE, reservation_date, now()) > 5").Find(&foundSales)
+	var ids = getSeatsIdBySale(foundSales)
+	client.Model(&model.Seat{}).Where("id in ?", ids).Update("status", "EMPTY")
+}
+
 func getSeatsIds(seats []model.Seat) []int {
 	var ids []int
 	for _, element := range seats {
 		ids = append(ids, element.ID)
+	}
+
+	return ids
+}
+
+func getSeatsIdBySale(sales []model.Sale) []int {
+	var ids []int
+	for _, element := range sales {
+		ids = append(ids, element.SeatID)
 	}
 
 	return ids
