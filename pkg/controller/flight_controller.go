@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"airport/pkg/database"
 	"airport/pkg/model"
 	"airport/pkg/service"
 	"github.com/gin-gonic/gin"
@@ -17,9 +16,9 @@ func GetFlights(c *gin.Context) {
 }
 
 func getAllFlights() []model.Flight {
-	return service.GetAllFlights(database.GetClient())
+	return service.GetAllFlights()
 }
 
 func getAllFlightsByDestination(destination string) []model.Flight {
-	return service.GetAllFlightsByDestination(database.GetClient(), destination)
+	return service.GetAllFlightsByDestination(destination)
 }

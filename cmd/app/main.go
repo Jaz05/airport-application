@@ -11,7 +11,10 @@ func main() {
 	r := router.SetupRouter()
 	loader.LoadTables(database.GetClient())
 	runCronTasks()
-	r.Run(":8080")
+	err := r.Run(":8080")
+	if err != nil {
+		panic("Run error!")
+	}
 }
 
 func runCronTasks() {

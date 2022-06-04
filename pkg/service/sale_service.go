@@ -8,10 +8,8 @@ import (
 )
 
 func BookFlightSeat(seatId int) error {
-	client := database.GetClient()
-
 	var seat model.Seat
-	client.Where("seats.id = ?", seatId).Find(&seat)
+	database.GetClient().Where("seats.id = ?", seatId).Find(&seat)
 	if seat.ID == 0 {
 		return errors.New("seat id non-existent")
 	}
@@ -21,17 +19,15 @@ func BookFlightSeat(seatId int) error {
 	seat.Status = model.Reserved
 
 	//TODO: Check errors
-	client.Save(seat)
+	database.GetClient().Save(seat)
 	return nil
 }
 
 func SaveSale(seatID int) error {
-	client := database.GetClient()
-
 	//TODO: Add missing fields
 	sale := model.Sale{SeatID: seatID, ReservationDate: time.Now(), PassengerID: 1}
 
 	//TODO: Check errors
-	client.Create(&sale)
+	database.GetClient().Create(&sale)
 	return nil
 }

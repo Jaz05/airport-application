@@ -10,7 +10,6 @@ import (
 )
 
 var db *gorm.DB
-var inMemoryDB *gorm.DB
 
 func GetClient() *gorm.DB {
 	if db == nil {
@@ -20,10 +19,10 @@ func GetClient() *gorm.DB {
 }
 
 func GetInMemoryClient() *gorm.DB {
-	if inMemoryDB == nil {
-		inMemoryDB = connectToInMemoryClient()
+	if db == nil {
+		db = connectToInMemoryClient()
 	}
-	return inMemoryDB
+	return db
 }
 
 func connectToDB() *gorm.DB {

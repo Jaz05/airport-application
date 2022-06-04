@@ -1,20 +1,19 @@
 package service
 
 import (
+	"airport/pkg/database"
 	"airport/pkg/model"
-
-	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
-func GetAllFlights(client *gorm.DB) []model.Flight {
+func GetAllFlights() []model.Flight {
 	var flights []model.Flight
-	client.Preload(clause.Associations).Preload("Destination.Place").Preload("Origin.Place").Find(&flights)
+	database.GetClient().Preload(clause.Associations).Preload("Destination.Place").Preload("Origin.Place").Find(&flights)
 	return flights
 }
 
-func GetAllFlightsByDestination(client *gorm.DB, destination string) []model.Flight {
+func GetAllFlightsByDestination(destination string) []model.Flight {
 	var flights []model.Flight
-	client.Where("destination_id = ?", destination).Preload(clause.Associations).Find(&flights)
+	database.GetClient().Where("destination_id = ?", destination).Preload(clause.Associations).Find(&flights)
 	return flights
 }
