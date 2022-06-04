@@ -4,12 +4,22 @@ import (
 	"airport/pkg/database"
 	"airport/pkg/model"
 	"airport/pkg/service"
+	"github.com/gin-gonic/gin"
 )
 
-func GetAllFlights() []model.Flight {
+func GetFlights(c *gin.Context) {
+	destination := c.Request.URL.Query().Get("destination")
+	if len(destination) > 0 {
+		c.JSON(200, getAllFlightsByDestination(destination))
+	} else {
+		c.JSON(200, getAllFlights())
+	}
+}
+
+func getAllFlights() []model.Flight {
 	return service.GetAllFlights(database.GetClient())
 }
 
-func GetAllFlightsByDestination(destination string) []model.Flight {
+func getAllFlightsByDestination(destination string) []model.Flight {
 	return service.GetAllFlightsByDestination(database.GetClient(), destination)
 }

@@ -2,21 +2,28 @@ package controller
 
 import (
 	"airport/pkg/database"
-	service "airport/pkg/service/seats"
+	"airport/pkg/service/seats"
+	"github.com/gin-gonic/gin"
 )
 
-type SeatResponse struct {
+type seatResponse struct {
 	Id       int
 	Price    float32
 	Position string
 }
 
-func GetAllSeatsByDestination(origin string, destination string) []SeatResponse {
+func GetSeats(c *gin.Context) {
+	origin := c.Request.URL.Query().Get("origin")
+	destination := c.Request.URL.Query().Get("destination")
+	c.JSON(200, getAllSeatsByDestination(origin, destination))
+}
+
+func getAllSeatsByDestination(origin string, destination string) []seatResponse {
 	var seats = service.GetAllSeatsByDestination(database.GetClient(), origin, destination)
-	var responseList []SeatResponse
+	var responseList []seatResponse
 	for _, seat := range seats {
 		var price = service.CalculateSeatPrice(seat)
-		var element = SeatResponse{Id: seat.ID, Position: seat.SeatLocation, Price: price}
+		var element = seatResponse{Id: seat.ID, Position: seat.SeatLocation, Price: price}
 		responseList = append(responseList, element)
 	}
 
