@@ -14,7 +14,7 @@ type TestConfig struct {
 
 func TestLoadConfigShouldLoadFile(t *testing.T) {
 	var config *TestConfig
-	LoadConfig("../../config/database.yml", &config)
+	LoadConfig("database.yml", &config)
 	if config == nil {
 		t.Fail()
 	}
@@ -22,7 +22,7 @@ func TestLoadConfigShouldLoadFile(t *testing.T) {
 
 func TestLoadConfigShouldLoadProperties(t *testing.T) {
 	var config *TestConfig
-	LoadConfig("../../config/database.yml", &config)
+	LoadConfig("database.yml", &config)
 	if len(config.Database) == 0 {
 		t.Fail()
 	}
