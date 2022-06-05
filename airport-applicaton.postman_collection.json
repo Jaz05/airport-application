@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "b27ecad5-1744-4e7b-947c-5cec1dcb234a",
+		"_postman_id": "0f292d8d-d9f0-4acf-9cd3-7d7685d89c65",
 		"name": "airport-applicaton",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18640939"
 	},
 	"item": [
 		{
@@ -42,7 +43,34 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n   \"name\":\"Juan\",\n   \"surname\":\"adsd\",\n   \"dni\":1783612,\n   \"seat_id\":4\n}",
+							"raw": "{\n   \"name\":\"Juan\",\n   \"surname\":\"adsd\",\n   \"dni\":1783612,\n   \"seat_id\":1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/sales",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sales"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "bookSeatWhenPassengerNotInDB",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"name\":\"Nuevo\",\n   \"surname\":\"Nuevo\",\n   \"dni\":99999,\n   \"seat_id\":6\n}",
 							"options": {
 								"raw": {
 									"language": "json"
