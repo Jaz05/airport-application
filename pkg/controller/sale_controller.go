@@ -1,8 +1,9 @@
 package controller
 
 import (
+	"airport/pkg/database"
 	"airport/pkg/model"
-	"airport/pkg/service"
+	"airport/pkg/service/sales"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
@@ -36,13 +37,13 @@ func CreateSale(c *gin.Context) {
 		return
 	}
 
-	if _, err := service.BookFlightSeat(body.SeatId); err != nil {
+	if _, err := sales.BookFlightSeat(database.GetClient(), body.SeatId); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
 	var sale model.Sale
-	sale, err := service.SaveSale(body.SeatId, body.Dni, body.Name, body.Surname)
+	sale, err := sales.SaveSale(database.GetClient(), body.SeatId, body.Dni, body.Name, body.Surname)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
