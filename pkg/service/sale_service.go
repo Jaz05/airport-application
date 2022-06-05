@@ -7,14 +7,14 @@ import (
 	"time"
 )
 
-func BookFlightSeat(seatId int) error {
+func BookFlightSeat(seatId int) (model.Seat, error) {
 	var seat model.Seat
 	database.GetClient().Where("seats.id = ?", seatId).Find(&seat)
 	if seat.ID == 0 {
-		return errors.New("seat id non-existent")
+		return seat, errors.New("seat id non-existent")
 	}
 	if seat.Status == model.Occupied || seat.Status == model.Reserved {
-		return errors.New("seat is not available")
+		return seat, errors.New("seat is not available")
 	}
 
 	seat.Status = model.Reserved
@@ -22,7 +22,7 @@ func BookFlightSeat(seatId int) error {
 	//TODO: Check errors
 	// TODO: use update instead of save to prevent possible creation of a new seat
 	database.GetClient().Save(seat)
-	return nil
+	return seat, nil
 }
 
 func SaveSale(seatId int, pDni int64, pName string, pSurname string) (model.Sale, error) {
