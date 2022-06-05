@@ -25,6 +25,7 @@ func TestBookFlightSeatShouldReturnSeatWithStatusReserved(t *testing.T) {
 
 }
 
+// TODO: fix - solo anda si se ejecuta solo (contexto sucio por el test anterior)
 func TestSaveSaleShouldReturnNewSale(t *testing.T) {
 	var flights = []model.Flight{{DestinationID: 1}}
 	var seats = []model.Seat{{FlightID: 1, Status: model.Empty}}

@@ -10,6 +10,7 @@ import (
 func BookFlightSeat(client *gorm.DB, seatId int) (model.Seat, error) {
 	var seat model.Seat
 	client.Where("seats.id = ?", seatId).Find(&seat)
+
 	if seat.ID == 0 {
 		return seat, errors.New("seat id non-existent")
 	}
@@ -17,14 +18,12 @@ func BookFlightSeat(client *gorm.DB, seatId int) (model.Seat, error) {
 		return seat, errors.New("seat is not available")
 	}
 
-	seat.Status = model.Reserved
-
 	//TODO: Check errors
-	// TODO: use update instead of save to prevent possible creation of a new seat
-	client.Save(seat)
+	client.Model(&seat).Update("status", model.Reserved)
 	return seat, nil
 }
 
+// SaveSale TODO: pasarle el body directamente? mover la logica de ver si el passenger existe a otra service que se ejecute antes?
 func SaveSale(client *gorm.DB, seatId int, pDni int64, pName string, pSurname string) (model.Sale, error) {
 	// fetch passenger and seat
 	var seat model.Seat
