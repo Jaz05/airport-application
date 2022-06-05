@@ -87,6 +87,7 @@ DROP TABLE IF EXISTS `airport`.`passengers` ;
 
 CREATE TABLE IF NOT EXISTS `airport`.`passengers` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `dni` BIGINT NOT NULL,
   `name` LONGTEXT NULL DEFAULT NULL,
   `sur_name` LONGTEXT NULL DEFAULT NULL,
   PRIMARY KEY (`id`))
@@ -233,7 +234,7 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `airport`;
-INSERT INTO `airport`.`passengers` (`id`, `name`, `sur_name`) VALUES (1, 'Juan', 'Perez');
-INSERT INTO `airport`.`passengers` (`id`, `name`, `sur_name`) VALUES (2, 'Test', 'Test');
+INSERT INTO `airport`.`passengers` (`id`, `dni`, `name`, `sur_name`) VALUES (1, 1783612, 'Juan', 'Perez');
+INSERT INTO `airport`.`passengers` (`id`, `dni`, `name`, `sur_name`) VALUES (2, 200000,'Test', 'Test');
 
 COMMIT;

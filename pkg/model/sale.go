@@ -1,6 +1,7 @@
 package model
 
 import (
+	"database/sql"
 	"time"
 )
 
@@ -11,6 +12,6 @@ type Sale struct {
 	SeatID          int
 	Seat            Seat
 	Price           float32
-	SaleDate        time.Time
+	SaleDate        sql.NullTime
 	ReservationDate time.Time
 }

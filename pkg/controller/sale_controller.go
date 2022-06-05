@@ -1,16 +1,26 @@
 package controller
 
 import (
+	"airport/pkg/model"
 	"airport/pkg/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
 
-type saleRequestBody struct {
+type SaleRequestBody struct {
 	Name    string `json:"name"`
 	Surname string `json:"surname"`
 	Dni     int64  `json:"dni"`
 	SeatId  int    `json:"seat_id"`
+}
+
+type SaleResponseBody struct {
+	ID              int             `json:"id"`
+	Passenger       model.Passenger `json:"passenger"`
+	SeatID          int             `json:"seat_id"`
+	Price           float32         `json:"price"`
+	ReservationDate time.Time       `json:"reservation_date"`
 }
 
 type paymentRequestBody struct {
@@ -20,7 +30,7 @@ type paymentRequestBody struct {
 }
 
 func CreateSale(c *gin.Context) {
-	var body saleRequestBody
+	var body SaleRequestBody
 	if err := c.BindJSON(&body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
@@ -31,17 +41,26 @@ func CreateSale(c *gin.Context) {
 		return
 	}
 
-	if err := service.SaveSale(body.SeatId); err != nil {
+	var sale model.Sale
+	sale, err := service.SaveSale(body.SeatId, body.Dni, body.Name, body.Surname);
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
-	c.Status(http.StatusOK)
+	var saleResponse SaleResponseBody
+	saleResponse.ID = sale.ID
+	saleResponse.Price = sale.Price
+	saleResponse.Passenger = sale.Passenger
+	saleResponse.ReservationDate = sale.ReservationDate
+	saleResponse.SeatID = sale.SeatID
+
+	c.JSON(http.StatusOK, saleResponse)
 }
 
 func CreatePayment(c *gin.Context) {
 	//saleID := c.Param("name")
-	var body saleRequestBody
+	var body SaleRequestBody
 
 	if err := c.BindJSON(&body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
