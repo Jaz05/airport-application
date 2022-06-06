@@ -7,7 +7,7 @@ import (
 func CalculateSeatPrice(seat model.Seat) float32 {
 	var basePrice = seat.Flight.BasePrice
 	var seatTypeMultiplier = seat.Type.Multiplier
-	var disponibility = GetSeatDisponibility(seat.Flight.OriginID, seat.Flight.DestinationID)
+	var disponibility = getSeatDisponibility(seat.Flight.OriginID, seat.Flight.DestinationID)
 	var disponibilityMultiplier = calculateDisponibilityMultiplier(disponibility)
 
 	return basePrice * seatTypeMultiplier * disponibilityMultiplier

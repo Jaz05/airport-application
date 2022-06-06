@@ -13,7 +13,7 @@ type Route struct {
 
 var priceMap = make(map[Route]int)
 
-func GetSeatDisponibility(origin int, destination int) int {
+var getSeatDisponibility = func(origin int, destination int) int {
 	var routeToFind = Route{origin: origin, destination: destination}
 	value, exists := priceMap[routeToFind]
 	if exists {
@@ -25,14 +25,15 @@ func GetSeatDisponibility(origin int, destination int) int {
 func loadAndMaintainDisponiblity(routeToFind Route) int {
 	var origin = strconv.Itoa(routeToFind.origin)
 	var destination = strconv.Itoa(routeToFind.destination)
-	value := loadDisponibility(routeToFind, origin, destination)
+	disponibility := loadDisponibility(routeToFind, origin, destination)
 	channel := make(chan int)
 	go updateDisponibility(origin, destination, channel)
 	go maintainDisponibility(routeToFind, channel)
 
-	return value
+	return disponibility
 }
 
+// TODO: cada vez que se llama queda en un loop infinito, es necesario? y si solamente se llama bajo demanda?
 func updateDisponibility(origin string, destination string, channel chan int) {
 	for {
 		time.Sleep(1 * time.Second)
