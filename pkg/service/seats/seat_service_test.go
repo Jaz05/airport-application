@@ -4,6 +4,7 @@ import (
 	"airport/pkg/database"
 	"airport/pkg/loader"
 	"airport/pkg/model"
+	"airport/pkg/testutils"
 	"testing"
 	"time"
 
@@ -11,6 +12,8 @@ import (
 )
 
 func TestGetAllSeatsByDestinationShouldReturnAllSeats(t *testing.T) {
+	testutils.BeforeEach()
+
 	var flights = []model.Flight{{OriginID: 1, DestinationID: 2}, {OriginID: 3, DestinationID: 2}, {OriginID: 1, DestinationID: 3}}
 	var seats = []model.Seat{{FlightID: 1, Status: "EMPTY"}, {FlightID: 1, Status: "EMPTY"}, {FlightID: 2, Status: "EMPTY"}, {FlightID: 1, Status: "RESERVED"}}
 	db := database.GetInMemoryClient()
@@ -23,8 +26,9 @@ func TestGetAllSeatsByDestinationShouldReturnAllSeats(t *testing.T) {
 	}
 }
 
-// TODO: Fix - Only works when running alone
 func TestGetAllSeatsByDestinationShouldReturnReservedSeats(t *testing.T) {
+	testutils.BeforeEach()
+
 	currentTime := time.Now()
 	expiredTime := currentTime.Add(-time.Minute * 10)
 	var flights = []model.Flight{{OriginID: 1, DestinationID: 2, Date: currentTime}, {OriginID: 1, DestinationID: 3, Date: expiredTime}}
@@ -42,8 +46,9 @@ func TestGetAllSeatsByDestinationShouldReturnReservedSeats(t *testing.T) {
 	}
 }
 
-// TODO: Fix - Only works when running alone
 func TestGetAvailableSeatsByDestinationWithNoAvailableSeatsShouldReturnEmpty(t *testing.T) {
+	testutils.BeforeEach()
+
 	currentTime := time.Now()
 	expiredTime := currentTime.Add(-time.Minute * 10)
 	var flights = []model.Flight{{OriginID: 1, DestinationID: 2, Date: currentTime}, {OriginID: 1, DestinationID: 3, Date: expiredTime}}

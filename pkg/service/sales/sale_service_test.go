@@ -4,12 +4,15 @@ import (
 	"airport/pkg/database"
 	"airport/pkg/loader"
 	"airport/pkg/model"
+	"airport/pkg/testutils"
 	"database/sql"
 	"testing"
 	"time"
 )
 
 func TestBookFlightSeatShouldReturnSeatWithStatusReserved(t *testing.T) {
+	testutils.BeforeEach()
+
 	var flights = []model.Flight{{DestinationID: 1}}
 	var seats = []model.Seat{{FlightID: 1, Status: model.Empty}}
 	db := database.GetInMemoryClient()
@@ -25,10 +28,11 @@ func TestBookFlightSeatShouldReturnSeatWithStatusReserved(t *testing.T) {
 
 }
 
-// TODO: fix - solo anda si se ejecuta solo (contexto sucio por el test anterior)
 func TestSaveSaleShouldReturnNewSale(t *testing.T) {
+	testutils.BeforeEach()
+
 	var flights = []model.Flight{{DestinationID: 1}}
-	var seats = []model.Seat{{FlightID: 1, Status: model.Empty}}
+	var seats = []model.Seat{{FlightID: 1, Flight: flights[0], Status: model.Empty}}
 	db := database.GetInMemoryClient()
 	loader.LoadTables(db)
 	db.Create(flights)
