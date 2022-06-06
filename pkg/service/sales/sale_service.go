@@ -2,8 +2,10 @@ package sales
 
 import (
 	"airport/pkg/model"
+	service "airport/pkg/service/seats"
 	"errors"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"time"
 )
 
@@ -30,7 +32,7 @@ func SaveSale(client *gorm.DB, seatId int, pDni int64, pName string, pSurname st
 	var passenger model.Passenger
 
 	// TODO: usar go routines y canales
-	client.Where("seats.id = ?", seatId).Find(&seat)
+	client.Where("seats.id = ?", seatId).Preload(clause.Associations).Find(&seat)
 	client.Where("passengers.dni = ?", pDni).Find(&passenger)
 
 	// if passenger doesnt not exist, create new one
@@ -42,7 +44,8 @@ func SaveSale(client *gorm.DB, seatId int, pDni int64, pName string, pSurname st
 	}
 
 	//TODO: calcular precio
-	sale := model.Sale{Passenger: passenger, PassengerID: passenger.ID, SeatID: seatId, Seat: seat, Price: 0, ReservationDate: time.Now()}
+	price := service.CalculateSeatPrice(client, seat)
+	sale := model.Sale{Passenger: passenger, PassengerID: passenger.ID, SeatID: seatId, Seat: seat, Price: price, ReservationDate: time.Now()}
 
 	//TODO: Check errors
 	client.Create(&sale)

@@ -2,13 +2,14 @@ package service
 
 import (
 	"airport/pkg/model"
+	"gorm.io/gorm"
 	"math"
 )
 
-func CalculateSeatPrice(seat model.Seat) float32 {
+func CalculateSeatPrice(client *gorm.DB, seat model.Seat) float32 {
 	var basePrice = seat.Flight.BasePrice
 	var seatTypeMultiplier = seat.Type.Multiplier
-	var disponibility = getSeatDisponibility(seat.Flight.OriginID, seat.Flight.DestinationID)
+	var disponibility = getSeatDisponibility(client, seat.Flight.OriginID, seat.Flight.DestinationID)
 	var disponibilityMultiplier = calculateDisponibilityMultiplier(disponibility)
 
 	// 2 decimal precision
