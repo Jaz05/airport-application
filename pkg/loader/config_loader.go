@@ -13,7 +13,9 @@ func LoadConfig[T any](fileName string, cfg *T) {
 	if err != nil {
 		println(err.Error())
 	}
-	defer f.Close()
+	defer func(f *os.File) {
+		_ = f.Close()
+	}(f)
 
 	decoder := yaml.NewDecoder(f)
 	err = decoder.Decode(cfg)

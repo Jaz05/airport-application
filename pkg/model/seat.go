@@ -17,3 +17,7 @@ type Seat struct {
 	Type         SeatType
 	Status       SeatStatus
 }
+
+func (s *Seat) SetOccupied() {
+	s.Status = Occupied
+}

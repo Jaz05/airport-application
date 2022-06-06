@@ -8,14 +8,14 @@ import (
 	"time"
 )
 
-type SaleRequestBody struct {
+type saleRequestBody struct {
 	Name    string `json:"name"`
 	Surname string `json:"surname"`
 	Dni     int64  `json:"dni"`
 	SeatId  int    `json:"seat_id"`
 }
 
-type SaleResponseBody struct {
+type saleResponseBody struct {
 	ID              int             `json:"id"`
 	Passenger       model.Passenger `json:"passenger"`
 	SeatID          int             `json:"seat_id"`
@@ -30,7 +30,7 @@ type paymentRequestBody struct {
 }
 
 func CreateSale(c *gin.Context) {
-	var body SaleRequestBody
+	var body saleRequestBody
 	if err := c.BindJSON(&body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
@@ -48,7 +48,7 @@ func CreateSale(c *gin.Context) {
 		return
 	}
 
-	var saleResponse SaleResponseBody
+	var saleResponse saleResponseBody
 	saleResponse.ID = sale.ID
 	saleResponse.Price = sale.Price
 	saleResponse.Passenger = sale.Passenger
@@ -59,12 +59,14 @@ func CreateSale(c *gin.Context) {
 }
 
 func CreatePayment(c *gin.Context) {
-	//saleID := c.Param("name")
-	var body SaleRequestBody
-
+	var body paymentRequestBody
 	if err := c.BindJSON(&body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
+	sale := sales.GetSale(c.Param("sale_id"))
+	// TODO: check not found
+
+	sales.ProcessPayment(sale, body.CardNumber, body.SecurityNumber, body.ExpirationDate)
 }
