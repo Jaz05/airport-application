@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"airport/pkg/database"
 	"airport/pkg/service/seats"
 	"github.com/gin-gonic/gin"
 )
@@ -19,10 +18,10 @@ func GetSeats(c *gin.Context) {
 }
 
 func getAllSeatsByDestination(origin string, destination string) []seatResponse {
-	var seats = service.GetAllSeatsByDestination(database.GetClient(), origin, destination)
+	var seats = service.GetAllSeatsByDestination(origin, destination)
 	var responseList []seatResponse
 	for _, seat := range seats {
-		var price = service.CalculateSeatPrice(database.GetClient(), seat)
+		var price = service.CalculateSeatPrice(seat)
 		var element = seatResponse{Id: seat.ID, Position: seat.SeatLocation, Price: price}
 		responseList = append(responseList, element)
 	}

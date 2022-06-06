@@ -2,25 +2,24 @@ package service
 
 import (
 	"airport/pkg/model"
-	"gorm.io/gorm"
 	"math"
 )
 
-func CalculateSeatPrice(client *gorm.DB, seat model.Seat) float32 {
+func CalculateSeatPrice(seat model.Seat) float32 {
 	var basePrice = seat.Flight.BasePrice
 	var seatTypeMultiplier = seat.Type.Multiplier
-	var disponibility = getSeatDisponibility(client, seat.Flight.OriginID, seat.Flight.DestinationID)
-	var disponibilityMultiplier = calculateDisponibilityMultiplier(disponibility)
+	var availability = getSeatAvailability(seat.Flight.OriginID, seat.Flight.DestinationID)
+	var availabilityMultiplier = calculateAvailabilityMultiplier(availability)
 
 	// 2 decimal precision
-	return float32(math.Round(float64(basePrice*seatTypeMultiplier*disponibilityMultiplier)*100) / 100)
+	return float32(math.Round(float64(basePrice*seatTypeMultiplier*availabilityMultiplier)*100) / 100)
 }
 
-func calculateDisponibilityMultiplier(disponibility int) float32 {
-	if disponibility >= 20 && disponibility < 50 {
+func calculateAvailabilityMultiplier(availability int) float32 {
+	if availability >= 20 && availability < 50 {
 		return 1.2
 	}
-	if disponibility < 20 {
+	if availability < 20 {
 		return 1.5
 	}
 	return 1

@@ -1,7 +1,6 @@
 package sales
 
 import (
-	"airport/pkg/database"
 	"airport/pkg/model"
 	"airport/pkg/testutils"
 	"database/sql"
@@ -14,7 +13,7 @@ func TestBookFlightSeatShouldReturnSeatWithStatusReserved(t *testing.T) {
 	testutils.MockData([]model.Flight{{DestinationID: 1}})
 	testutils.MockData([]model.Seat{{FlightID: 1, Status: model.Empty}})
 
-	seat, err := BookFlightSeat(database.GetInMemoryClient(), 1)
+	seat, err := BookFlightSeat(1)
 
 	if seat.Status != model.Reserved || err != nil {
 		t.Fatalf("Expected: %q, Error: %v, Got: %v", model.Reserved, err, seat.Status)
@@ -43,7 +42,7 @@ func TestSaveSaleShouldReturnNewSale(t *testing.T) {
 
 	requestPassenger := model.Passenger{ID: 1, Name: "asd", SurName: "asd", Dni: 123}
 
-	sale, err := SaveSale(database.GetInMemoryClient(), 1, requestPassenger.Dni, requestPassenger.Name, requestPassenger.SurName)
+	sale, err := SaveSale(1, requestPassenger.Dni, requestPassenger.Name, requestPassenger.SurName)
 
 	if expectedSale.Passenger != sale.Passenger || expectedSale.Seat != sale.Seat || err != nil {
 		t.Fatalf("Expected: %v, Error: %v, Got: %v", expectedSale, err, sale)

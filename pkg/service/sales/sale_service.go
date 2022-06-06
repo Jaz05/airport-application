@@ -1,17 +1,17 @@
 package sales
 
 import (
+	"airport/pkg/database"
 	"airport/pkg/model"
 	service "airport/pkg/service/seats"
 	"errors"
-	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"time"
 )
 
-func BookFlightSeat(client *gorm.DB, seatId int) (model.Seat, error) {
+func BookFlightSeat(seatId int) (model.Seat, error) {
 	var seat model.Seat
-	client.Where("seats.id = ?", seatId).Find(&seat)
+	database.GetClient().Where("seats.id = ?", seatId).Find(&seat)
 
 	if seat.ID == 0 {
 		return seat, errors.New("seat id non-existent")
@@ -21,33 +21,33 @@ func BookFlightSeat(client *gorm.DB, seatId int) (model.Seat, error) {
 	}
 
 	//TODO: Check errors
-	client.Model(&seat).Update("status", model.Reserved)
+	database.GetClient().Model(&seat).Update("status", model.Reserved)
 	return seat, nil
 }
 
 // SaveSale TODO: pasarle el body directamente? mover la logica de ver si el passenger existe a otra service que se ejecute antes?
-func SaveSale(client *gorm.DB, seatId int, pDni int64, pName string, pSurname string) (model.Sale, error) {
+func SaveSale(seatId int, pDni int64, pName string, pSurname string) (model.Sale, error) {
 	// fetch passenger and seat
 	var seat model.Seat
 	var passenger model.Passenger
 
 	// TODO: usar go routines y canales
-	client.Where("seats.id = ?", seatId).Preload(clause.Associations).Find(&seat)
-	client.Where("passengers.dni = ?", pDni).Find(&passenger)
+	database.GetClient().Where("seats.id = ?", seatId).Preload(clause.Associations).Find(&seat)
+	database.GetClient().Where("passengers.dni = ?", pDni).Find(&passenger)
 
 	// if passenger doesnt not exist, create new one
 	if passenger.ID == 0 {
 		passenger.Name = pName
 		passenger.SurName = pSurname
 		passenger.Dni = pDni
-		client.Create(&passenger)
+		database.GetClient().Create(&passenger)
 	}
 
 	//TODO: calcular precio
-	price := service.CalculateSeatPrice(client, seat)
+	price := service.CalculateSeatPrice(seat)
 	sale := model.Sale{Passenger: passenger, PassengerID: passenger.ID, SeatID: seatId, Seat: seat, Price: price, ReservationDate: time.Now()}
 
 	//TODO: Check errors
-	client.Create(&sale)
+	database.GetClient().Create(&sale)
 	return sale, nil
 }
