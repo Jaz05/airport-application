@@ -2,6 +2,7 @@ package service
 
 import (
 	"airport/pkg/model"
+	"math"
 )
 
 func CalculateSeatPrice(seat model.Seat) float32 {
@@ -10,7 +11,8 @@ func CalculateSeatPrice(seat model.Seat) float32 {
 	var disponibility = getSeatDisponibility(seat.Flight.OriginID, seat.Flight.DestinationID)
 	var disponibilityMultiplier = calculateDisponibilityMultiplier(disponibility)
 
-	return basePrice * seatTypeMultiplier * disponibilityMultiplier
+	// 2 decimal precision
+	return float32(math.Round(float64(basePrice*seatTypeMultiplier*disponibilityMultiplier)*100) / 100)
 }
 
 func calculateDisponibilityMultiplier(disponibility int) float32 {
