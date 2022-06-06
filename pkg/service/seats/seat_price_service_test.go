@@ -2,8 +2,8 @@ package service
 
 import (
 	"airport/pkg/database"
-	"airport/pkg/loader"
 	"airport/pkg/model"
+	"airport/pkg/testutils"
 	"gorm.io/gorm"
 	"testing"
 	"time"
@@ -25,14 +25,15 @@ var seat = model.Seat{Flight: model.Flight{
 }}
 
 func TestWithMockCalculateSeatPriceWhenDisponibilityIsLessThan20AndTypeIsEconomicAndBasePriceIs100ShouldReturn150(t *testing.T) {
-	db := database.GetInMemoryClient()
+	testutils.BeforeEach()
+
 	// mock getSeatDisponibility func
 	getSeatDisponibility = func(client *gorm.DB, origin int, destination int) int {
 		return 19
 	}
 	var expectedPrice float32 = 150.0
 
-	price := CalculateSeatPrice(db, seat)
+	price := CalculateSeatPrice(database.GetInMemoryClient(), seat)
 
 	if expectedPrice != price {
 		t.Fatalf("Expected: %v, Got: %v", expectedPrice, price)
@@ -56,15 +57,14 @@ func TestCalculateSeatPriceWhenDisponibilityIs20PercentAndTypeIsEconomicAndBaseP
 		{FlightID: 1, Status: "OCCUPIED"},
 		{FlightID: 1, Status: "EMPTY"}}
 
-	db := database.GetInMemoryClient()
-	loader.LoadTables(db)
-	db.Create(flights)
-	db.Create(types)
-	db.Create(seats)
+	testutils.BeforeEach()
+	testutils.MockData(flights)
+	testutils.MockData(types)
+	testutils.MockData(seats)
 
 	var expectedPrice float32 = 150.0
 
-	price := CalculateSeatPrice(db, seat)
+	price := CalculateSeatPrice(database.GetInMemoryClient(), seat)
 
 	if expectedPrice != price {
 		t.Fatalf("Expected: %v, Got: %v", expectedPrice, price)
@@ -73,14 +73,15 @@ func TestCalculateSeatPriceWhenDisponibilityIs20PercentAndTypeIsEconomicAndBaseP
 }
 
 func TestCalculateSeatPriceWhenDisponibilityIsMoreThan20ButLessThan50AndTypeIsEconomicAndBasePriceIs100ShouldReturn120(t *testing.T) {
-	db := database.GetInMemoryClient()
+	testutils.BeforeEach()
+
 	// mock getSeatDisponibility func
 	getSeatDisponibility = func(client *gorm.DB, origin int, destination int) int {
 		return 21
 	}
 	var expectedPrice float32 = 120.0
 
-	price := CalculateSeatPrice(db, seat)
+	price := CalculateSeatPrice(database.GetInMemoryClient(), seat)
 
 	if expectedPrice != price {
 		t.Fatalf("Expected: %v, Got: %v", expectedPrice, price)
@@ -89,14 +90,15 @@ func TestCalculateSeatPriceWhenDisponibilityIsMoreThan20ButLessThan50AndTypeIsEc
 }
 
 func TestCalculateSeatPriceWhenDisponibilityIsMoreThan50AndTypeIsEconomicAndBasePriceIs100ShouldReturn100(t *testing.T) {
-	db := database.GetInMemoryClient()
+	testutils.BeforeEach()
+
 	// mock getSeatDisponibility func
 	getSeatDisponibility = func(client *gorm.DB, origin int, destination int) int {
 		return 51
 	}
 	var expectedPrice float32 = 100.0
 
-	price := CalculateSeatPrice(db, seat)
+	price := CalculateSeatPrice(database.GetInMemoryClient(), seat)
 
 	if expectedPrice != price {
 		t.Fatalf("Expected: %v, Got: %v", expectedPrice, price)

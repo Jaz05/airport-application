@@ -2,7 +2,6 @@ package sales
 
 import (
 	"airport/pkg/database"
-	"airport/pkg/loader"
 	"airport/pkg/model"
 	"airport/pkg/testutils"
 	"database/sql"
@@ -12,15 +11,10 @@ import (
 
 func TestBookFlightSeatShouldReturnSeatWithStatusReserved(t *testing.T) {
 	testutils.BeforeEach()
+	testutils.MockData([]model.Flight{{DestinationID: 1}})
+	testutils.MockData([]model.Seat{{FlightID: 1, Status: model.Empty}})
 
-	var flights = []model.Flight{{DestinationID: 1}}
-	var seats = []model.Seat{{FlightID: 1, Status: model.Empty}}
-	db := database.GetInMemoryClient()
-	loader.LoadTables(db)
-	db.Create(flights)
-	db.Create(seats)
-
-	seat, err := BookFlightSeat(db, 1)
+	seat, err := BookFlightSeat(database.GetInMemoryClient(), 1)
 
 	if seat.Status != model.Reserved || err != nil {
 		t.Fatalf("Expected: %q, Error: %v, Got: %v", model.Reserved, err, seat.Status)
@@ -30,13 +24,10 @@ func TestBookFlightSeatShouldReturnSeatWithStatusReserved(t *testing.T) {
 
 func TestSaveSaleShouldReturnNewSale(t *testing.T) {
 	testutils.BeforeEach()
-
 	var flights = []model.Flight{{DestinationID: 1}}
+	testutils.MockData(flights)
 	var seats = []model.Seat{{FlightID: 1, Flight: flights[0], Status: model.Empty}}
-	db := database.GetInMemoryClient()
-	loader.LoadTables(db)
-	db.Create(flights)
-	db.Create(seats)
+	testutils.MockData(seats)
 
 	expectedPassenger := model.Passenger{ID: 1, Name: "asd", SurName: "asd", Dni: 123}
 	expectedSale := model.Sale{
@@ -52,7 +43,7 @@ func TestSaveSaleShouldReturnNewSale(t *testing.T) {
 
 	requestPassenger := model.Passenger{ID: 1, Name: "asd", SurName: "asd", Dni: 123}
 
-	sale, err := SaveSale(db, 1, requestPassenger.Dni, requestPassenger.Name, requestPassenger.SurName)
+	sale, err := SaveSale(database.GetInMemoryClient(), 1, requestPassenger.Dni, requestPassenger.Name, requestPassenger.SurName)
 
 	if expectedSale.Passenger != sale.Passenger || expectedSale.Seat != sale.Seat || err != nil {
 		t.Fatalf("Expected: %v, Error: %v, Got: %v", expectedSale, err, sale)
