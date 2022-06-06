@@ -21,3 +21,7 @@ type Seat struct {
 func (s *Seat) SetOccupied() {
 	s.Status = Occupied
 }
+
+func (s *Seat) IsReserved() bool {
+	return s.Status == Reserved
+}

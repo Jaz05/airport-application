@@ -65,8 +65,13 @@ func CreatePayment(c *gin.Context) {
 		return
 	}
 
-	sale := sales.GetSale(c.Param("sale_id"))
-	// TODO: check not found
+	sale, err := sales.GetSale(c.Param("sale_id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+	}
 
-	sales.ProcessPayment(sale, body.CardNumber, body.SecurityNumber, body.ExpirationDate)
+	err = sales.ProcessPayment(sale, body.CardNumber, body.SecurityNumber, body.ExpirationDate)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+	}
 }

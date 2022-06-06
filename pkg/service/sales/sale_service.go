@@ -52,14 +52,32 @@ func SaveSale(seatId int, pDni int64, pName string, pSurname string) (model.Sale
 	return sale, nil
 }
 
-func GetSale(saleID string) model.Sale {
+func GetSale(saleID string) (model.Sale, error) {
 	var sale model.Sale
-	database.GetClient().Where("sales.id = ?", saleID).Preload(clause.Associations).Find(&sale)
+	r := database.GetClient().Where("sales.id = ?", saleID).Preload(clause.Associations).Find(&sale)
+	if r.Error != nil {
+		return sale, errors.New("sale not found")
+	}
 
-	return sale
+	return sale, nil
 }
 
-func ProcessPayment(sale model.Sale, CardNumber int64, SecurityNumber int, ExpirationDate string) {
+func ProcessPayment(sale model.Sale, _ int64, _ int, _ string) error {
+	if !sale.Seat.IsReserved() {
+		return errors.New("seat is not reserved")
+	}
+
+	if !sale.IsSaleDateNull() {
+		return errors.New("sale is already paid")
+	}
+
 	sale.Seat.SetOccupied()
-	database.GetClient().Session(&gorm.Session{FullSaveAssociations: true}).Save(&sale)
+	sale.SetSaleDateAsCurrent()
+
+	r := database.GetClient().Session(&gorm.Session{FullSaveAssociations: true}).Save(&sale)
+	if r.Error != nil {
+		return errors.New("error processing payment")
+	}
+
+	return nil
 }
