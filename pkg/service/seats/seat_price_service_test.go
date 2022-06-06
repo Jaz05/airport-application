@@ -52,3 +52,19 @@ func TestCalculateSeatPriceWhenDisponibilityIsMoreThan20ButLessThan50AndTypeIsEc
 	}
 
 }
+
+func TestCalculateSeatPriceWhenDisponibilityIsMoreThan50AndTypeIsEconomicAndBasePriceIs100ShouldReturn100(t *testing.T) {
+
+	// mock getSeatDisponibility func
+	getSeatDisponibility = func(origin int, destination int) int {
+		return 51
+	}
+	var expectedPrice float32 = 100.0
+
+	price := CalculateSeatPrice(seat)
+
+	if expectedPrice != price {
+		t.Fatalf("Expected: %v, Got: %v", expectedPrice, price)
+	}
+
+}
