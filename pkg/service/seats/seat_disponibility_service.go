@@ -12,7 +12,7 @@ type Route struct {
 
 var priceMap = make(map[Route]int)
 
-var getSeatAvailability = func(origin int, destination int) int {
+func GetSeatAvailability(origin int, destination int) int {
 	var routeToFind = Route{origin: origin, destination: destination}
 	value, exists := priceMap[routeToFind]
 	if exists {

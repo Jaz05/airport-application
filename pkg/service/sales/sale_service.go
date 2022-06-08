@@ -44,7 +44,7 @@ func SaveSale(seatId int, pDni int64, pName string, pSurname string) (model.Sale
 		database.GetClient().Create(&passenger)
 	}
 
-	price := service.CalculateSeatPrice(seat)
+	price := service.CalculateSeatPrice(service.GetSeatAvailability, seat)
 	sale := model.Sale{Passenger: passenger, PassengerID: passenger.ID, SeatID: seatId, Seat: seat, Price: price, ReservationDate: time.Now()}
 
 	//TODO: Check errors

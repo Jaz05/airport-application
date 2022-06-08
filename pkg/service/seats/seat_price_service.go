@@ -5,7 +5,7 @@ import (
 	"math"
 )
 
-func CalculateSeatPrice(seat model.Seat) float32 {
+func CalculateSeatPrice(getSeatAvailability func(origin int, destination int) int, seat model.Seat) float32 {
 	var basePrice = seat.Flight.BasePrice
 	var seatTypeMultiplier = seat.Type.Multiplier
 	var availability = getSeatAvailability(seat.Flight.OriginID, seat.Flight.DestinationID)

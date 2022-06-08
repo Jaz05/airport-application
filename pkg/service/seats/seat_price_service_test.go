@@ -25,44 +25,9 @@ var seat = model.Seat{Flight: model.Flight{
 func TestWithMockCalculateSeatPriceWhenAvailabilityIsLessThan20AndTypeIsEconomicAndBasePriceIs100ShouldReturn150(t *testing.T) {
 	testutils.BeforeEach()
 
-	// mock getSeatAvailability func
-	getSeatAvailability = func(origin int, destination int) int {
-		return 19
-	}
 	var expectedPrice float32 = 150.0
 
-	price := CalculateSeatPrice(seat)
-
-	if expectedPrice != price {
-		t.Fatalf("Expected: %v, Got: %v", expectedPrice, price)
-	}
-
-}
-
-func TestCalculateSeatPriceWhenAvailabilityIs20PercentAndTypeIsEconomicAndBasePriceIs100ShouldReturn150(t *testing.T) {
-	var flights = []model.Flight{{OriginID: 1, DestinationID: 2}}
-	var types = []model.SeatType{{
-		ID:         1,
-		Category:   2,
-		Multiplier: 1,
-	}}
-
-	// 4 occupied, 1 empty equals 20% availability
-	var seats = []model.Seat{{FlightID: 1, Status: "OCCUPIED"},
-		{FlightID: 1, Status: "OCCUPIED"},
-		{FlightID: 1, Status: "OCCUPIED"},
-		{FlightID: 1, Status: "OCCUPIED"},
-		{FlightID: 1, Status: "OCCUPIED"},
-		{FlightID: 1, Status: "EMPTY"}}
-
-	testutils.BeforeEach()
-	testutils.MockData(flights)
-	testutils.MockData(types)
-	testutils.MockData(seats)
-
-	var expectedPrice float32 = 150.0
-
-	price := CalculateSeatPrice(seat)
+	price := CalculateSeatPrice(testutils.MockGetSeatAvailability(19), seat)
 
 	if expectedPrice != price {
 		t.Fatalf("Expected: %v, Got: %v", expectedPrice, price)
@@ -73,13 +38,9 @@ func TestCalculateSeatPriceWhenAvailabilityIs20PercentAndTypeIsEconomicAndBasePr
 func TestCalculateSeatPriceWhenAvailabilityIsMoreThan20ButLessThan50AndTypeIsEconomicAndBasePriceIs100ShouldReturn120(t *testing.T) {
 	testutils.BeforeEach()
 
-	// mock getSeatAvailability func
-	getSeatAvailability = func(origin int, destination int) int {
-		return 21
-	}
 	var expectedPrice float32 = 120.0
 
-	price := CalculateSeatPrice(seat)
+	price := CalculateSeatPrice(testutils.MockGetSeatAvailability(21), seat)
 
 	if expectedPrice != price {
 		t.Fatalf("Expected: %v, Got: %v", expectedPrice, price)
@@ -91,12 +52,126 @@ func TestCalculateSeatPriceWhenAvailabilityIsMoreThan50AndTypeIsEconomicAndBaseP
 	testutils.BeforeEach()
 
 	// mock getSeatAvailability func
-	getSeatAvailability = func(origin int, destination int) int {
-		return 51
-	}
+
 	var expectedPrice float32 = 100.0
 
-	price := CalculateSeatPrice(seat)
+	price := CalculateSeatPrice(testutils.MockGetSeatAvailability(51), seat)
+
+	if expectedPrice != price {
+		t.Fatalf("Expected: %v, Got: %v", expectedPrice, price)
+	}
+
+}
+
+func TestCalculateSeatPriceWhenAvailabilityIs16PercentAndTypeIsEconomicAndBasePriceIs100ShouldReturn150(t *testing.T) {
+	var flights = []model.Flight{{OriginID: 1, DestinationID: 2}}
+	var types = []model.SeatType{testutils.NewTouristicSeatType()}
+
+	// 5 occupied, 1 empty equals 16.6% availability
+	var seats = []model.Seat{
+		testutils.NewOccupiedSeat(1),
+		testutils.NewOccupiedSeat(1),
+		testutils.NewOccupiedSeat(1),
+		testutils.NewOccupiedSeat(1),
+		testutils.NewOccupiedSeat(1),
+		testutils.NewEmptySeat(1),
+	}
+
+	testutils.BeforeEach()
+	testutils.MockData(flights)
+	testutils.MockData(types)
+	testutils.MockData(seats)
+
+	var expectedPrice float32 = 150.0
+
+	price := CalculateSeatPrice(GetSeatAvailability, seat)
+
+	if expectedPrice != price {
+		t.Fatalf("Expected: %v, Got: %v", expectedPrice, price)
+	}
+
+}
+
+func TestCalculateSeatPriceWhenAvailabilityIs20PercentAndTypeIsEconomicAndBasePriceIs100ShouldReturn120(t *testing.T) {
+	var flights = []model.Flight{{OriginID: 1, DestinationID: 2}}
+	var types = []model.SeatType{testutils.NewTouristicSeatType()}
+
+	// 4 occupied, 1 empty equals 20% availability
+	var seats = []model.Seat{
+		testutils.NewOccupiedSeat(1),
+		testutils.NewOccupiedSeat(1),
+		testutils.NewOccupiedSeat(1),
+		testutils.NewOccupiedSeat(1),
+		testutils.NewEmptySeat(1),
+	}
+
+	testutils.BeforeEach()
+	priceMap = make(map[Route]int)
+	testutils.MockData(flights)
+	testutils.MockData(types)
+	testutils.MockData(seats)
+
+	var expectedPrice float32 = 120.0
+
+	price := CalculateSeatPrice(GetSeatAvailability, seat)
+
+	if expectedPrice != price {
+		t.Fatalf("Expected: %v, Got: %v", expectedPrice, price)
+	}
+
+}
+
+func TestCalculateSeatPriceWhenAvailabilityIs25PercentAndTypeIsEconomicAndBasePriceIs100ShouldReturn120(t *testing.T) {
+	var flights = []model.Flight{{OriginID: 1, DestinationID: 2}}
+	var types = []model.SeatType{testutils.NewTouristicSeatType()}
+
+	// 3 occupied, 1 empty equals 25% availability
+	var seats = []model.Seat{
+		testutils.NewOccupiedSeat(1),
+		testutils.NewOccupiedSeat(1),
+		testutils.NewOccupiedSeat(1),
+		testutils.NewEmptySeat(1),
+	}
+
+	testutils.BeforeEach()
+	priceMap = make(map[Route]int)
+	testutils.MockData(flights)
+	testutils.MockData(types)
+	testutils.MockData(seats)
+
+	var expectedPrice float32 = 120.0
+
+	price := CalculateSeatPrice(GetSeatAvailability, seat)
+
+	if expectedPrice != price {
+		t.Fatalf("Expected: %v, Got: %v", expectedPrice, price)
+	}
+
+}
+
+func TestCalculateSeatPriceWhenAvailabilityIs50PercentAndTypeIsEconomicAndBasePriceIs100ShouldReturn100(t *testing.T) {
+	var flights = []model.Flight{{OriginID: 1, DestinationID: 2}}
+	var types = []model.SeatType{testutils.NewTouristicSeatType()}
+
+	// 3 occupied, 1 empty equals 25% availability
+	var seats = []model.Seat{
+		testutils.NewOccupiedSeat(1),
+		testutils.NewOccupiedSeat(1),
+		testutils.NewOccupiedSeat(1),
+		testutils.NewEmptySeat(1),
+		testutils.NewEmptySeat(1),
+		testutils.NewEmptySeat(1),
+	}
+
+	testutils.BeforeEach()
+	priceMap = make(map[Route]int)
+	testutils.MockData(flights)
+	testutils.MockData(types)
+	testutils.MockData(seats)
+
+	var expectedPrice float32 = 100.0
+
+	price := CalculateSeatPrice(GetSeatAvailability, seat)
 
 	if expectedPrice != price {
 		t.Fatalf("Expected: %v, Got: %v", expectedPrice, price)
