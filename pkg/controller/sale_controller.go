@@ -2,7 +2,9 @@ package controller
 
 import (
 	"airport/pkg/model"
+	"airport/pkg/service/queries"
 	"airport/pkg/service/sales"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
@@ -29,6 +31,8 @@ type paymentRequestBody struct {
 	ExpirationDate string `json:"expiration_date"`
 }
 
+type Result string
+
 func CreateSale(c *gin.Context) {
 	var body saleRequestBody
 	if err := c.BindJSON(&body); err != nil {
@@ -36,13 +40,25 @@ func CreateSale(c *gin.Context) {
 		return
 	}
 
+	// llamado secuencial a apis que tardan
+	var responses []string
+
+	var response, err = queries.DelayGetUserInfo()
+	responses = append(responses, response)
+	response, err = queries.DelayGetUserInfo()
+	responses = append(responses, response)
+	response, err = queries.DelayGetUserInfo()
+	responses = append(responses, response)
+
+	fmt.Println(responses)
+
 	if _, err := sales.BookFlightSeat(body.SeatId); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
 	var sale model.Sale
-	sale, err := sales.SaveSale(body.SeatId, body.Dni, body.Name, body.Surname)
+	sale, err = sales.SaveSale(body.SeatId, body.Dni, body.Name, body.Surname)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
