@@ -3,20 +3,54 @@ package queries
 import (
 	"fmt"
 	"io"
+	"math/rand"
 	"net/http"
 )
 
 // DelayGetUserInfo llamado a api con delay
-func DelayGetUserInfo() (string, error) {
-	const url = "https://reqres.in/api/users/2?delay=2"
-	resp, err := http.Get(url)
+// TODO: pasar por parametro el delay?
+func DelayGetUserInfo() string {
+	// tarda entre 1 y 3 segundos
+	delay := rand.Intn(2) + 1
+	url := fmt.Sprintf("https://reqres.in/api/users/2?delay=%d", delay)
 
+	resp, err := http.Get(url)
 	if err != nil {
-		return "", fmt.Errorf("error fetching url: %q", url)
+		return ""
 	}
 
 	defer resp.Body.Close()
 	respBody, err := io.ReadAll(resp.Body)
 	response := string(respBody)
-	return response, nil
+	return response
+}
+
+func DelayGetClimateInfo() string {
+	delay := rand.Intn(2) + 1
+	url := fmt.Sprintf("https://reqres.in/api/users/2?delay=%d", delay)
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return ""
+	}
+
+	defer resp.Body.Close()
+	respBody, err := io.ReadAll(resp.Body)
+	response := string(respBody)
+	return response
+}
+
+func DelayGetDollarInfo() string {
+	delay := rand.Intn(2) + 1
+	url := fmt.Sprintf("https://reqres.in/api/users/2?delay=%d", delay)
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return ""
+	}
+
+	defer resp.Body.Close()
+	respBody, err := io.ReadAll(resp.Body)
+	response := string(respBody)
+	return response
 }
