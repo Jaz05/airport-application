@@ -40,16 +40,25 @@ func CreateSale(c *gin.Context) {
 		return
 	}
 
-	// llamado secuencial a apis que tardan
+	// llamados concurrentes a apis que tardan
+	channel := make(chan string)
+	go func() {
+		var response, _ = queries.DelayGetUserInfo()
+		channel <- response
+	}()
+	go func() {
+		var response, _ = queries.DelayGetUserInfo()
+		channel <- response
+	}()
+	go func() {
+		var response, _ = queries.DelayGetUserInfo()
+		channel <- response
+	}()
 	var responses []string
-
-	var response, err = queries.DelayGetUserInfo()
-	responses = append(responses, response)
-	response, err = queries.DelayGetUserInfo()
-	responses = append(responses, response)
-	response, err = queries.DelayGetUserInfo()
-	responses = append(responses, response)
-
+	for i := 0; i < 3; i++ {
+		response := <-channel
+		responses = append(responses, response)
+	}
 	fmt.Println(responses)
 
 	if _, err := sales.BookFlightSeat(body.SeatId); err != nil {
@@ -58,7 +67,7 @@ func CreateSale(c *gin.Context) {
 	}
 
 	var sale model.Sale
-	sale, err = sales.SaveSale(body.SeatId, body.Dni, body.Name, body.Surname)
+	sale, err := sales.SaveSale(body.SeatId, body.Dni, body.Name, body.Surname)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
