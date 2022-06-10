@@ -4,7 +4,7 @@ import (
 	"airport/pkg/model"
 	"airport/pkg/service/queries"
 	"airport/pkg/service/sales"
-	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
@@ -31,19 +31,6 @@ type paymentRequestBody struct {
 	ExpirationDate string `json:"expiration_date"`
 }
 
-// First (replicas[0]=queries.DelayGetUserInfo, ...)
-// FanIn Concurrency Pattern, again
-func First(replicas ...func() string) string {
-	c := make(chan string)
-	fetchReplica := func(i int) { c <- replicas[i]() }
-	for i := range replicas {
-		go fetchReplica(i)
-	}
-
-	// devuelvo la respuesta de la replica mas rapida
-	return <-c
-}
-
 func CreateSale(c *gin.Context) {
 	var body saleRequestBody
 	if err := c.BindJSON(&body); err != nil {
@@ -51,43 +38,21 @@ func CreateSale(c *gin.Context) {
 		return
 	}
 
-	// varios llamados concurrentes a apis que tardan un tiempo variable usando goroutines,
-	// me quedo con la respuesta mas rapida de cada fetch lanzando varios fetchs iguales con mas goroutines
-	channel := make(chan string)
-
-	// FanIn Concurrency Pattern
-	go func() {
-		channel <- First(queries.DelayGetUserInfo, queries.DelayGetUserInfo, queries.DelayGetUserInfo)
-	}()
-	go func() {
-		channel <- First(queries.DelayGetClimateInfo, queries.DelayGetClimateInfo, queries.DelayGetClimateInfo)
-	}()
-	go func() {
-		channel <- First(queries.DelayGetDollarInfo, queries.DelayGetDollarInfo, queries.DelayGetDollarInfo)
-	}()
-
-	var responses []string
-	timeout := time.After(3000 * time.Millisecond)
-
-	for i := 0; i < 3; i++ {
-		select {
-		case response := <-channel:
-			responses = append(responses, response)
-		case <-timeout:
-			err := errors.New("TIMEOUT")
-			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
-			return
-		}
+	responses, err := queries.FanInFetch(queries.DelayGetUserInfo, queries.DelayGetClimateInfo, queries.DelayGetDollarInfo)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
 	}
-	//
 
-	if _, err := sales.BookFlightSeat(body.SeatId); err != nil {
+	fmt.Println(responses)
+
+	if _, err = sales.BookFlightSeat(body.SeatId); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
 	var sale model.Sale
-	sale, err := sales.SaveSale(body.SeatId, body.Dni, body.Name, body.Surname)
+	sale, err = sales.SaveSale(body.SeatId, body.Dni, body.Name, body.Surname)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
