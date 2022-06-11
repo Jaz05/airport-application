@@ -38,13 +38,13 @@ func CreateSale(c *gin.Context) {
 		return
 	}
 
-	responses, err := queries.FanInFetch(queries.DelayGetUserInfo, queries.DelayGetClimateInfo, queries.DelayGetDollarInfo)
+	responses, err := queries.FanInFetch(queries.FakeFetch("urlclimate"), queries.FakeFetch("urldollar"), queries.FakeFetch("urlotherthing"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
-	fmt.Println(responses)
+	fmt.Println("Se obtuvieron", len(responses), "respuestas")
 
 	if _, err = sales.BookFlightSeat(body.SeatId); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
