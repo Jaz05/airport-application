@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
-	"time"
 )
 
 func BookFlightSeat(seatId int) (model.Seat, error) {
@@ -28,6 +27,7 @@ func BookFlightSeat(seatId int) (model.Seat, error) {
 	return seat, nil
 }
 
+// TODO: ISSUE: que pasa si falla el savesale? te queda el asiento reservado pero sin ninguna sale asociada
 // SaveSale TODO: pasarle el body directamente? mover la logica de ver si el passenger existe a otra service que se ejecute antes?
 func SaveSale(seatId int, pDni int64, pName string, pSurname string) (model.Sale, error) {
 	// fetch passenger and seat
@@ -38,19 +38,20 @@ func SaveSale(seatId int, pDni int64, pName string, pSurname string) (model.Sale
 	database.GetClient().Where("seats.id = ?", seatId).Preload(clause.Associations).Find(&seat)
 	database.GetClient().Where("passengers.dni = ?", pDni).Find(&passenger)
 
-	// if passenger doesnt not exist, create new one
+	// if passenger does not exist, create new one
 	if passenger.ID == 0 {
-		passenger.Name = pName
-		passenger.SurName = pSurname
-		passenger.Dni = pDni
+		passenger = *model.NewPassenger(pName, pSurname, pDni)
 		database.GetClient().Create(&passenger)
 	}
 
 	price := service.CalculateSeatPrice(service.GetSeatAvailability, seat)
-	sale := model.Sale{Passenger: passenger, PassengerID: passenger.ID, SeatID: seatId, Seat: seat, Price: price, ReservationDate: time.Now()}
+	sale := *model.NewSale(passenger.ID, passenger, seatId, seat, price)
+	sale.SetReservationDateAsCurrent()
 
-	//TODO: Check errors
-	database.GetClient().Create(&sale)
+	r := database.GetClient().Create(&sale)
+	if r.Error != nil {
+		return sale, errors.New("error creating sale")
+	}
 	return sale, nil
 }
 
