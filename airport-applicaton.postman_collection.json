@@ -43,7 +43,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n   \"name\":\"Juan\",\n   \"surname\":\"adsd\",\n   \"dni\":1783612,\n   \"seat_id\":1\n}",
+							"raw": "{\n   \"name\":\"Juan\",\n   \"surname\":\"adsd\",\n   \"dni\":1783612,\n   \"seat_id\":7\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -64,13 +64,42 @@
 					"response": []
 				},
 				{
+					"name": "payment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"card_number\":31231245124,\n   \"security_number\":123,\n   \"expiration_date\":\"10/10/10\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/sales/6/payment",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"sales",
+								"6",
+								"payment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "bookSeatWhenPassengerNotInDB",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n   \"name\":\"Nuevo\",\n   \"surname\":\"Nuevo\",\n   \"dni\":99999,\n   \"seat_id\":6\n}",
+							"raw": "{\n   \"name\":\"Nuevo\",\n   \"surname\":\"Nuevo\",\n   \"dni\":99999,\n   \"seat_id\":5\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -85,6 +114,29 @@
 							"port": "8080",
 							"path": [
 								"sales"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "external-api",
+			"item": [
+				{
+					"name": "localhost:8081/climate",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/climate",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"climate"
 							]
 						}
 					},
