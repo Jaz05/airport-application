@@ -11,6 +11,7 @@ import (
 
 // DelayGetUserInfo llamado a api con delay
 // TODO: pasar por parametro el delay?
+// TODO: FIX: mucho copy paste de funciones
 func DelayGetUserInfo() string {
 	// tarda entre 1 y 3 segundos
 	delay := rand.Intn(2) + 1
@@ -72,6 +73,7 @@ func first(replicas ...func() string) string {
 	return <-c
 }
 
+// TODO: manejo de errores dentro de una goroutine?
 // TODO: deshardcodear que sean si o si 3 queries
 // TODO: nice to have, pasar por parametro cuantas replicas se hacen
 func FanInFetch(queries ...func() string) ([]string, error) {
@@ -79,21 +81,17 @@ func FanInFetch(queries ...func() string) ([]string, error) {
 	// me quedo con la respuesta mas rapida de cada fetch lanzando varios fetchs iguales con mas goroutines
 	channel := make(chan string)
 
-	// FanIn Concurrency Pattern
-	go func() {
-		channel <- first(queries[0], queries[0], queries[0])
-	}()
-	go func() {
-		channel <- first(queries[1], queries[1], queries[1])
-	}()
-	go func() {
-		channel <- first(queries[2], queries[2], queries[2])
-	}()
+	for i := range queries {
+		i := i
+		go func() {
+			channel <- first(queries[i], queries[i], queries[i])
+		}()
+	}
 
 	var responses []string
 	timeout := time.After(3000 * time.Millisecond)
 
-	for i := 0; i < 3; i++ {
+	for i := 0; i < len(queries); i++ {
 		select {
 		case response := <-channel:
 			responses = append(responses, response)
