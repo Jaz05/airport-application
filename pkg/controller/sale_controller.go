@@ -29,6 +29,10 @@ type paymentRequestBody struct {
 	ExpirationDate string `json:"expiration_date"`
 }
 
+type paymentResponseBody struct {
+	Result string `json:"result"`
+}
+
 func CreateSale(c *gin.Context) {
 	var body saleRequestBody
 	if err := c.BindJSON(&body); err != nil {
@@ -68,10 +72,16 @@ func CreatePayment(c *gin.Context) {
 	sale, err := sales.GetSale(c.Param("sale_id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
 	}
 
 	err = sales.ProcessPayment(sale, body.CardNumber, body.SecurityNumber, body.ExpirationDate)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
 	}
+
+	c.JSON(http.StatusOK, paymentResponseBody{
+		Result: "Payment successful",
+	})
 }

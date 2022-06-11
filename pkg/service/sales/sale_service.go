@@ -3,8 +3,10 @@ package sales
 import (
 	"airport/pkg/database"
 	"airport/pkg/model"
+	"airport/pkg/service/queries"
 	service "airport/pkg/service/seats"
 	"errors"
+	"fmt"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"time"
@@ -62,13 +64,22 @@ func GetSale(saleID string) (model.Sale, error) {
 	return sale, nil
 }
 
-func ProcessPayment(sale model.Sale, _ int64, _ int, _ string) error {
+func ProcessPayment(sale model.Sale, cardNumber int64, securityNumber int, expirationDate string) error {
 	if !sale.Seat.IsReserved() {
 		return errors.New("seat is not reserved")
 	}
 
 	if !sale.IsSaleDateNull() {
 		return errors.New("sale is already paid")
+	}
+
+	// call payment api
+	cardValidationFetch := queries.FakeFetch(fmt.Sprintf("api/bank/card_number=%d", cardNumber))
+	cardPaymentFetch := queries.FakeFetch(fmt.Sprintf("api/payment/card_number=%d", cardNumber))
+
+	_, err := queries.FanInFetch(cardValidationFetch, cardPaymentFetch)
+	if err != nil {
+		return errors.New("there was an error processing your payment")
 	}
 
 	sale.Seat.SetOccupied()
