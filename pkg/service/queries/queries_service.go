@@ -9,7 +9,10 @@ import (
 	"time"
 )
 
-type Result string
+type Result struct {
+	code int
+	msg  string
+}
 
 type Fetch func() Result
 
@@ -23,13 +26,16 @@ func FakeFetch(url string) Fetch {
 
 		resp, err := http.Get(url)
 		if err != nil {
-			return Result("")
+			return Result{
+				code: 500,
+				msg:  "",
+			}
 		}
 
 		defer resp.Body.Close()
 		respBody, err := io.ReadAll(resp.Body)
 		response := string(respBody)
-		return Result(response)
+		return Result{200, response}
 	}
 }
 

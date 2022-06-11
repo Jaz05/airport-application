@@ -2,9 +2,7 @@ package controller
 
 import (
 	"airport/pkg/model"
-	"airport/pkg/service/queries"
 	"airport/pkg/service/sales"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
@@ -31,6 +29,10 @@ type paymentRequestBody struct {
 	ExpirationDate string `json:"expiration_date"`
 }
 
+type paymentResponseBody struct {
+	Result string `json:"result"`
+}
+
 func CreateSale(c *gin.Context) {
 	var body saleRequestBody
 	if err := c.BindJSON(&body); err != nil {
@@ -38,21 +40,13 @@ func CreateSale(c *gin.Context) {
 		return
 	}
 
-	responses, err := queries.FanInFetch(queries.FakeFetch("urlclimate"), queries.FakeFetch("urldollar"), queries.FakeFetch("urlotherthing"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
-		return
-	}
-
-	fmt.Println("Se obtuvieron", len(responses), "respuestas")
-
-	if _, err = sales.BookFlightSeat(body.SeatId); err != nil {
+	if _, err := sales.BookFlightSeat(body.SeatId); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
 	var sale model.Sale
-	sale, err = sales.SaveSale(body.SeatId, body.Dni, body.Name, body.Surname)
+	sale, err := sales.SaveSale(body.SeatId, body.Dni, body.Name, body.Surname)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
@@ -78,10 +72,16 @@ func CreatePayment(c *gin.Context) {
 	sale, err := sales.GetSale(c.Param("sale_id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
 	}
 
 	err = sales.ProcessPayment(sale, body.CardNumber, body.SecurityNumber, body.ExpirationDate)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
 	}
+
+	c.JSON(http.StatusOK, paymentResponseBody{
+		Result: "Payment successful",
+	})
 }
