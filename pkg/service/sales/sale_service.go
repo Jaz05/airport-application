@@ -34,9 +34,18 @@ func SaveSale(seatId int, pDni int64, pName string, pSurname string) (model.Sale
 	var seat model.Seat
 	var passenger model.Passenger
 
-	// TODO: usar go routines y canales
-	database.GetClient().Where("seats.id = ?", seatId).Preload(clause.Associations).Find(&seat)
-	database.GetClient().Where("passengers.dni = ?", pDni).Find(&passenger)
+	c := make(chan string)
+	go func() {
+		database.GetClient().Where("seats.id = ?", seatId).Preload(clause.Associations).Find(&seat)
+		c <- "Done"
+	}()
+	go func() {
+		database.GetClient().Where("passengers.dni = ?", pDni).Find(&passenger)
+		c <- "Done"
+	}()
+	for i := 0; i < 2; i++ {
+		<-c
+	}
 
 	// if passenger does not exist, create new one
 	if passenger.ID == 0 {
