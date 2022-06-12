@@ -12,9 +12,9 @@ func TestPassengerConstructorShouldReturnNewPassenger(t *testing.T) {
 		Dni:     38998262,
 	}
 
-	passenger := *NewPassenger("agus", "legui", 38998262)
+	passenger := NewPassenger("agus", "legui", 38998262)
 
-	if expectedPassenger != passenger {
+	if expectedPassenger != *passenger {
 		t.Fatalf("Expected: %v, Got: %v", expectedPassenger, passenger)
 	}
 

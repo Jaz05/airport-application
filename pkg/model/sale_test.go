@@ -17,9 +17,9 @@ func TestSaleConstructorShouldReturnNewSale(t *testing.T) {
 		ReservationDate: time.Time{},
 	}
 
-	sale := *NewSale(1, Passenger{}, 1, Seat{}, 0)
+	sale := NewSale(1, Passenger{}, 1, Seat{}, 0)
 
-	if expectedSale != sale {
+	if expectedSale != *sale {
 		t.Fatalf("Expected: %v, Got: %v", expectedSale, sale)
 	}
 

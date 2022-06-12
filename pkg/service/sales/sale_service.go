@@ -54,14 +54,14 @@ func SaveSale(seatId int, pDni int64, pName string, pSurname string) (model.Sale
 	}
 
 	price := service.CalculateSeatPrice(service.GetSeatAvailability, seat)
-	sale := *model.NewSale(passenger.ID, passenger, seatId, seat, price)
+	sale := model.NewSale(passenger.ID, passenger, seatId, seat, price)
 	sale.SetReservationDateAsCurrent()
 
-	r := database.GetClient().Create(&sale)
+	r := database.GetClient().Create(sale)
 	if r.Error != nil {
-		return sale, errors.New("error creating sale")
+		return *sale, errors.New("error creating sale")
 	}
-	return sale, nil
+	return *sale, nil
 }
 
 func GetSale(saleID string) (model.Sale, error) {
