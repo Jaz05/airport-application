@@ -1,0 +1,140 @@
+basePath: /api/v1
+definitions:
+  controller.paymentResponseBody:
+    properties:
+      result:
+        type: string
+    type: object
+  controller.saleResponseBody:
+    properties:
+      id:
+        type: integer
+      passenger:
+        $ref: '#/definitions/model.Passenger'
+      price:
+        type: number
+      reservation_date:
+        type: string
+      seat_id:
+        type: integer
+    type: object
+  model.Airport:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      place:
+        $ref: '#/definitions/model.Place'
+      placeID:
+        type: integer
+      status:
+        type: string
+    type: object
+  model.Flight:
+    properties:
+      basePrice:
+        type: number
+      capacity:
+        type: integer
+      date:
+        type: string
+      destination:
+        $ref: '#/definitions/model.Airport'
+      destinationID:
+        type: integer
+      id:
+        type: integer
+      origin:
+        $ref: '#/definitions/model.Airport'
+      originID:
+        type: integer
+    type: object
+  model.Passenger:
+    properties:
+      dni:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      surName:
+        type: string
+    type: object
+  model.Place:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Airport Rest API
+  title: Airport Application
+  version: "1.0"
+paths:
+  /flights:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Flight'
+            type: array
+      summary: Get all flights
+      tags:
+      - flights
+  /sales:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.saleResponseBody'
+      summary: Creates a sale
+      tags:
+      - sales
+  /sales/:sale_id/payment:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Sale ID
+        in: path
+        name: sale_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.paymentResponseBody'
+      summary: Creates a payment
+      tags:
+      - sales
+  /seats:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Flight'
+            type: array
+      summary: Get all seats
+      tags:
+      - seats
+swagger: "2.0"

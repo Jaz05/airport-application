@@ -2,21 +2,36 @@ package router
 
 import (
 	"airport/pkg/controller"
+
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
-	// Flights endpoints
-	r.GET("/flights", controller.GetFlights)
+	v1 := r.Group("/api/v1")
 
-	// Sales endpoints
-	r.POST("/sales", controller.CreateSale)
-	r.POST("/sales/:sale_id/payment", controller.CreatePayment)
+	{
+		flights := v1.Group("/flights")
+		{
+			flights.GET("", controller.GetFlights)
+		}
 
-	// Seats endpoints
-	r.GET("/seats", controller.GetSeats)
+		sales := v1.Group("/sales")
+		{
+			sales.POST("", controller.CreateSale)
+			sales.POST(":sale_id/payment", controller.CreatePayment)
+		}
+
+		seats := v1.Group("/seats")
+		{
+			seats.GET("/seats", controller.GetSeats)
+		}
+
+	}
 
 	return r
 }

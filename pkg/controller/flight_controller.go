@@ -3,9 +3,16 @@ package controller
 import (
 	"airport/pkg/model"
 	"airport/pkg/service"
+
 	"github.com/gin-gonic/gin"
 )
 
+// GetFlights godoc
+// @Summary      Get all flights
+// @Tags         flights
+// @Produce      json
+// @Success      200  {array}  model.Flight
+// @Router       /flights [get]
 func GetFlights(c *gin.Context) {
 	destination := c.Request.URL.Query().Get("destination")
 	if len(destination) > 0 {
