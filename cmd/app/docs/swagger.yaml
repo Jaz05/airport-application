@@ -1,4 +1,3 @@
-basePath: /api/v1
 definitions:
   controller.paymentRequestBody:
     properties:
@@ -37,6 +36,22 @@ definitions:
         type: string
       seat_id:
         type: integer
+    type: object
+  controller.salesRequestBody:
+    properties:
+      sales:
+        items:
+          $ref: '#/definitions/controller.saleRequestBody'
+        type: array
+    type: object
+  controller.salesResponseBody:
+    properties:
+      sales:
+        items:
+          $ref: '#/definitions/controller.saleResponseBody'
+        type: array
+      token:
+        type: string
     type: object
   model.Airport:
     properties:
@@ -119,14 +134,14 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/controller.saleRequestBody'
+          $ref: '#/definitions/controller.salesRequestBody'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/controller.saleResponseBody'
+            $ref: '#/definitions/controller.salesResponseBody'
       summary: Creates a sale
       tags:
       - sales

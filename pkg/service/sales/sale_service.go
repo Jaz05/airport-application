@@ -7,6 +7,7 @@ import (
 	service "airport/pkg/service/seats"
 	"errors"
 	"fmt"
+
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -29,7 +30,7 @@ func BookFlightSeat(seatId int) (model.Seat, error) {
 
 // TODO: ISSUE: que pasa si falla el savesale? te queda el asiento reservado pero sin ninguna sale asociada
 // SaveSale TODO: pasarle el body directamente? mover la logica de ver si el passenger existe a otra service que se ejecute antes?
-func SaveSale(seatId int, pDni int64, pName string, pSurname string) (model.Sale, error) {
+func SaveSale(seatId int, pDni int64, pName string, pSurname string, token string) (model.Sale, error) {
 	// fetch passenger and seat
 	var seat model.Seat
 	var passenger model.Passenger
@@ -56,6 +57,7 @@ func SaveSale(seatId int, pDni int64, pName string, pSurname string) (model.Sale
 	price := service.CalculateSeatPrice(service.GetSeatAvailability, seat)
 	sale := model.NewSale(passenger.ID, passenger, seatId, seat, price)
 	sale.SetReservationDateAsCurrent()
+	sale.Token = token
 
 	r := database.GetClient().Create(sale)
 	if r.Error != nil {

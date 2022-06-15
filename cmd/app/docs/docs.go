@@ -57,7 +57,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controller.saleRequestBody"
+                            "$ref": "#/definitions/controller.salesRequestBody"
                         }
                     }
                 ],
@@ -65,7 +65,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controller.saleResponseBody"
+                            "$ref": "#/definitions/controller.salesResponseBody"
                         }
                     }
                 }
@@ -210,6 +210,31 @@ const docTemplate = `{
                 }
             }
         },
+        "controller.salesRequestBody": {
+            "type": "object",
+            "properties": {
+                "sales": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/controller.saleRequestBody"
+                    }
+                }
+            }
+        },
+        "controller.salesResponseBody": {
+            "type": "object",
+            "properties": {
+                "sales": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/controller.saleResponseBody"
+                    }
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
         "model.Airport": {
             "type": "object",
             "properties": {
@@ -294,7 +319,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "localhost:8080",
-	BasePath:         "/api/v1",
+	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "Airport Application",
 	Description:      "Airport Rest API",

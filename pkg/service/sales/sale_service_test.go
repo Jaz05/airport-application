@@ -42,7 +42,7 @@ func TestSaveSaleShouldReturnNewSale(t *testing.T) {
 
 	requestPassenger := model.Passenger{ID: 1, Name: "asd", SurName: "asd", Dni: 123}
 
-	sale, err := SaveSale(1, requestPassenger.Dni, requestPassenger.Name, requestPassenger.SurName)
+	sale, err := SaveSale(1, requestPassenger.Dni, requestPassenger.Name, requestPassenger.SurName, "some token")
 
 	if expectedSale.Passenger != sale.Passenger || expectedSale.Seat != sale.Seat || err != nil {
 		t.Fatalf("Expected: %v, Error: %v, Got: %v", expectedSale, err, sale)
