@@ -50,6 +50,17 @@ const docTemplate = `{
                     "sales"
                 ],
                 "summary": "Creates a sale",
+                "parameters": [
+                    {
+                        "description": "request body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.saleRequestBody"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -79,6 +90,15 @@ const docTemplate = `{
                         "name": "sale_id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "request body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.paymentRequestBody"
+                        }
                     }
                 ],
                 "responses": {
@@ -100,6 +120,22 @@ const docTemplate = `{
                     "seats"
                 ],
                 "summary": "Get all seats",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "origin ID",
+                        "name": "origin",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "destination ID",
+                        "name": "destination",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -115,10 +151,41 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "controller.paymentRequestBody": {
+            "type": "object",
+            "properties": {
+                "card_number": {
+                    "type": "integer"
+                },
+                "expiration_date": {
+                    "type": "string"
+                },
+                "security_number": {
+                    "type": "integer"
+                }
+            }
+        },
         "controller.paymentResponseBody": {
             "type": "object",
             "properties": {
                 "result": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.saleRequestBody": {
+            "type": "object",
+            "properties": {
+                "dni": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "seat_id": {
+                    "type": "integer"
+                },
+                "surname": {
                     "type": "string"
                 }
             }

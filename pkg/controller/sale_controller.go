@@ -39,6 +39,7 @@ type paymentResponseBody struct {
 // @Tags         sales
 // @Accept       json
 // @Produce      json
+// @Param body body saleRequestBody true "request body"
 // @Success      200  {object}  saleResponseBody
 // @Router       /sales [post]
 func CreateSale(c *gin.Context) {
@@ -76,6 +77,7 @@ func CreateSale(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        sale_id   path      int  true  "Sale ID"
+// @Param body body paymentRequestBody true "request body"
 // @Success      200  {object}  paymentResponseBody
 // @Router       /sales/:sale_id/payment [post]
 func CreatePayment(c *gin.Context) {
