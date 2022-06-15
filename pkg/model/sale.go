@@ -14,6 +14,7 @@ type Sale struct {
 	Price           float32
 	SaleDate        sql.NullTime
 	ReservationDate time.Time
+	Token           string
 }
 
 func NewSale(passengerId int, passenger Passenger, seatId int, seat Seat, price float32) *Sale {

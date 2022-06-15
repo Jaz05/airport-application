@@ -12,7 +12,7 @@ func SetupRouter() *gin.Engine {
 	r := gin.Default()
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
-	v1 := r.Group("/api/v1")
+	v1 := r.Group("")
 
 	{
 		flights := v1.Group("/flights")
@@ -22,13 +22,13 @@ func SetupRouter() *gin.Engine {
 
 		sales := v1.Group("/sales")
 		{
-			sales.POST("", controller.CreateSale)
+			sales.POST("", controller.CreateSales)
 			sales.POST(":sale_id/payment", controller.CreatePayment)
 		}
 
 		seats := v1.Group("/seats")
 		{
-			seats.GET("/seats", controller.GetSeats)
+			seats.GET("", controller.GetSeats)
 		}
 
 	}

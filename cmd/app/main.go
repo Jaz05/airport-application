@@ -13,11 +13,11 @@ import (
 // @description     Airport Rest API
 
 // @host      localhost:8080
-// @BasePath  /api/v1
+// @BasePath
 
 func main() {
 	r := router.SetupRouter()
-	docs.SwaggerInfo.BasePath = "/api/v1"
+	docs.SwaggerInfo.BasePath = ""
 
 	loader.LoadTables(database.GetClient())
 	// runCronTasks()
