@@ -16,6 +16,8 @@ type seatResponse struct {
 // @Summary      Get all seats
 // @Tags         seats
 // @Produce      json
+// @Param        origin   query int  true  "origin ID"
+// @Param        destination   query int  true  "destination ID"
 // @Success      200  {array}  model.Flight
 // @Router       /seats [get]
 func GetSeats(c *gin.Context) {

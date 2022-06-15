@@ -1,8 +1,28 @@
 basePath: /api/v1
 definitions:
+  controller.paymentRequestBody:
+    properties:
+      card_number:
+        type: integer
+      expiration_date:
+        type: string
+      security_number:
+        type: integer
+    type: object
   controller.paymentResponseBody:
     properties:
       result:
+        type: string
+    type: object
+  controller.saleRequestBody:
+    properties:
+      dni:
+        type: integer
+      name:
+        type: string
+      seat_id:
+        type: integer
+      surname:
         type: string
     type: object
   controller.saleResponseBody:
@@ -93,6 +113,13 @@ paths:
     post:
       consumes:
       - application/json
+      parameters:
+      - description: request body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/controller.saleRequestBody'
       produces:
       - application/json
       responses:
@@ -113,6 +140,12 @@ paths:
         name: sale_id
         required: true
         type: integer
+      - description: request body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/controller.paymentRequestBody'
       produces:
       - application/json
       responses:
@@ -125,6 +158,17 @@ paths:
       - sales
   /seats:
     get:
+      parameters:
+      - description: origin ID
+        in: query
+        name: origin
+        required: true
+        type: integer
+      - description: destination ID
+        in: query
+        name: destination
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
