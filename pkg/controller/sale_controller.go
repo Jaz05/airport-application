@@ -3,9 +3,10 @@ package controller
 import (
 	"airport/pkg/model"
 	"airport/pkg/service/sales"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 type saleRequestBody struct {
@@ -33,6 +34,13 @@ type paymentResponseBody struct {
 	Result string `json:"result"`
 }
 
+// CreateSale godoc
+// @Summary      Creates a sale
+// @Tags         sales
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  saleResponseBody
+// @Router       /sales [post]
 func CreateSale(c *gin.Context) {
 	var body saleRequestBody
 	if err := c.BindJSON(&body); err != nil {
@@ -62,6 +70,14 @@ func CreateSale(c *gin.Context) {
 	c.JSON(http.StatusOK, saleResponse)
 }
 
+// CreatePayment godoc
+// @Summary      Creates a payment
+// @Tags         sales
+// @Accept       json
+// @Produce      json
+// @Param        sale_id   path      int  true  "Sale ID"
+// @Success      200  {object}  paymentResponseBody
+// @Router       /sales/:sale_id/payment [post]
 func CreatePayment(c *gin.Context) {
 	var body paymentRequestBody
 	if err := c.BindJSON(&body); err != nil {
