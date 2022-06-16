@@ -38,6 +38,39 @@ const docTemplate = `{
                 }
             }
         },
+        "/payment": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payment"
+                ],
+                "summary": "Creates a payment",
+                "parameters": [
+                    {
+                        "description": "request body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.paymentRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.paymentResponseBody"
+                        }
+                    }
+                }
+            }
+        },
         "/sales": {
             "post": {
                 "consumes": [
@@ -66,46 +99,6 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/controller.salesResponseBody"
-                        }
-                    }
-                }
-            }
-        },
-        "/sales/:sale_id/payment": {
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "sales"
-                ],
-                "summary": "Creates a payment",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Sale ID",
-                        "name": "sale_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "request body",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/controller.paymentRequestBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/controller.paymentResponseBody"
                         }
                     }
                 }
@@ -162,6 +155,9 @@ const docTemplate = `{
                 },
                 "security_number": {
                     "type": "integer"
+                },
+                "token": {
+                    "type": "string"
                 }
             }
         },

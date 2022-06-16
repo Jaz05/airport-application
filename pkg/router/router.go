@@ -23,7 +23,11 @@ func SetupRouter() *gin.Engine {
 		sales := v1.Group("/sales")
 		{
 			sales.POST("", controller.CreateSales)
-			sales.POST(":sale_id/payment", controller.CreatePayment)
+		}
+
+		payment := v1.Group("/payment")
+		{
+			payment.POST("", controller.CreatePayment)
 		}
 
 		seats := v1.Group("/seats")

@@ -3,10 +3,8 @@ package sales
 import (
 	"airport/pkg/database"
 	"airport/pkg/model"
-	"airport/pkg/service/queries"
 	service "airport/pkg/service/seats"
 	"errors"
-	"fmt"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -66,17 +64,17 @@ func SaveSale(seatId int, pDni int64, pName string, pSurname string, token strin
 	return *sale, nil
 }
 
-func GetSale(saleID string) (model.Sale, error) {
-	var sale model.Sale
-	r := database.GetClient().Where("sales.id = ?", saleID).Preload(clause.Associations).Find(&sale)
+func GetSalesByToken(token string) ([]model.Sale, error) {
+	var sales []model.Sale
+	r := database.GetClient().Where("sales.token = ?", token).Preload(clause.Associations).Find(&sales)
 	if r.Error != nil {
-		return sale, errors.New("sale not found")
+		return sales, errors.New("sale not found")
 	}
 
-	return sale, nil
+	return sales, nil
 }
 
-func ProcessPayment(sale model.Sale, cardNumber int64, securityNumber int, expirationDate string) error {
+func ValidateSale(sale model.Sale) error {
 	if !sale.Seat.IsReserved() {
 		return errors.New("seat is not reserved")
 	}
@@ -85,15 +83,11 @@ func ProcessPayment(sale model.Sale, cardNumber int64, securityNumber int, expir
 		return errors.New("sale is already paid")
 	}
 
-	// call payment api
-	cardValidationFetch := queries.FakeFetch(fmt.Sprintf("api/bank/card_number=%d", cardNumber))
-	cardPaymentFetch := queries.FakeFetch(fmt.Sprintf("api/payment/card_number=%d", cardNumber))
+	return nil
 
-	_, err := queries.FanInFetch(cardValidationFetch, cardPaymentFetch)
-	if err != nil {
-		return errors.New("there was an error processing your payment")
-	}
+}
 
+func FulfillSale(sale model.Sale) error {
 	sale.Seat.SetOccupied()
 	sale.SetSaleDateAsCurrent()
 
@@ -101,6 +95,5 @@ func ProcessPayment(sale model.Sale, cardNumber int64, securityNumber int, expir
 	if r.Error != nil {
 		return errors.New("error processing payment")
 	}
-
 	return nil
 }

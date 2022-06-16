@@ -7,6 +7,8 @@ definitions:
         type: string
       security_number:
         type: integer
+      token:
+        type: string
     type: object
   controller.paymentResponseBody:
     properties:
@@ -124,6 +126,27 @@ paths:
       summary: Get all flights
       tags:
       - flights
+  /payment:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: request body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/controller.paymentRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.paymentResponseBody'
+      summary: Creates a payment
+      tags:
+      - payment
   /sales:
     post:
       consumes:
@@ -143,32 +166,6 @@ paths:
           schema:
             $ref: '#/definitions/controller.salesResponseBody'
       summary: Creates a sale
-      tags:
-      - sales
-  /sales/:sale_id/payment:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Sale ID
-        in: path
-        name: sale_id
-        required: true
-        type: integer
-      - description: request body
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/controller.paymentRequestBody'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/controller.paymentResponseBody'
-      summary: Creates a payment
       tags:
       - sales
   /seats:
