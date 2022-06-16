@@ -105,6 +105,61 @@ definitions:
       name:
         type: string
     type: object
+  model.Sale:
+    properties:
+      id:
+        type: integer
+      passenger:
+        $ref: '#/definitions/model.Passenger'
+      passengerID:
+        type: integer
+      price:
+        type: number
+      reservationDate:
+        type: string
+      saleDate:
+        $ref: '#/definitions/sql.NullTime'
+      seat:
+        $ref: '#/definitions/model.Seat'
+      seatID:
+        type: integer
+      token:
+        type: string
+    type: object
+  model.Seat:
+    properties:
+      flight:
+        $ref: '#/definitions/model.Flight'
+      flightID:
+        type: integer
+      id:
+        type: integer
+      seatLocation:
+        type: string
+      status:
+        type: string
+      type:
+        $ref: '#/definitions/model.SeatType'
+      typeID:
+        type: integer
+    type: object
+  model.SeatType:
+    properties:
+      category:
+        type: integer
+      id:
+        type: integer
+      multiplier:
+        type: number
+    type: object
+  sql.NullTime:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -148,6 +203,27 @@ paths:
       tags:
       - payment
   /sales:
+    get:
+      parameters:
+      - description: Sale token
+        in: query
+        name: token
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/model.Sale'
+              type: array
+            type: array
+      summary: Get sales by token
+      tags:
+      - sales
     post:
       consumes:
       - application/json

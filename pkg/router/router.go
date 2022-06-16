@@ -23,6 +23,7 @@ func SetupRouter() *gin.Engine {
 		sales := v1.Group("/sales")
 		{
 			sales.POST("", controller.CreateSales)
+			sales.GET("", controller.GetSalesByToken)
 		}
 
 		payment := v1.Group("/payment")
