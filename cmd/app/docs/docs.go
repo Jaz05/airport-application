@@ -72,6 +72,38 @@ const docTemplate = `{
             }
         },
         "/sales": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "sales"
+                ],
+                "summary": "Get sales by token",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Sale token",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/model.Sale"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "post": {
                 "consumes": [
                     "application/json"
@@ -305,6 +337,90 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "model.Sale": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "passenger": {
+                    "$ref": "#/definitions/model.Passenger"
+                },
+                "passengerID": {
+                    "type": "integer"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "reservationDate": {
+                    "type": "string"
+                },
+                "saleDate": {
+                    "$ref": "#/definitions/sql.NullTime"
+                },
+                "seat": {
+                    "$ref": "#/definitions/model.Seat"
+                },
+                "seatID": {
+                    "type": "integer"
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Seat": {
+            "type": "object",
+            "properties": {
+                "flight": {
+                    "$ref": "#/definitions/model.Flight"
+                },
+                "flightID": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "seatLocation": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/model.SeatType"
+                },
+                "typeID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.SeatType": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "multiplier": {
+                    "type": "number"
+                }
+            }
+        },
+        "sql.NullTime": {
+            "type": "object",
+            "properties": {
+                "time": {
+                    "type": "string"
+                },
+                "valid": {
+                    "description": "Valid is true if Time is not NULL",
+                    "type": "boolean"
                 }
             }
         }

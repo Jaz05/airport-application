@@ -81,3 +81,21 @@ func CreateSales(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response)
 }
+
+// GetSalesByToken godoc
+// @Summary      Get sales by token
+// @Tags         sales
+// @Produce      json
+// @Param        token   query int  true  "Sale token"
+// @Success      200  {array}  []model.Sale
+// @Router       /sales [get]
+func GetSalesByToken(c *gin.Context) {
+	token := c.Request.URL.Query().Get("token")
+	salesList, err := sales.GetSalesByToken(token)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+
+	c.JSON(200, salesList)
+}
