@@ -52,11 +52,39 @@ func CreateSales(c *gin.Context) {
 	var salesResponses []saleResponseBody
 	token := uuid.New().String()
 
-	for _, body := range salesBody.Sales {
-		if _, err := sales.BookFlightSeat(body.SeatId); err != nil {
+	/*reps: how many sales are we doing*/
+	reps := len(salesBody.Sales)
+	/*reps: each sales returns a value through this channel*/
+	channel := make(chan model.Seat)
+	/*reps: if an error happens it returns an error, to this channel, instead */
+	errors := make(chan error)
+	// TODO: una alternativa es hacer un Optional/RightLeft del tipo SeatError{Seat, error} y mandar todo al mismo canal
+	// TODO: mover todo esto a un service pq tiene logica de negocio el controller
+	// TODO: si un solo asiento se reserva queda reservado y el otro no (implementar rollback)
+	// TODO: validar que no tengan el mismo seat id
+	for i := 0; i < reps; i++ {
+		body := salesBody.Sales[i]
+		go func() {
+			seat, err := sales.BookFlightSeat(body.SeatId)
+			if err != nil {
+				errors <- err
+			}
+			channel <- seat
+		}()
+	}
+
+	/*we expect an amount of answers equal to the length of sales*/
+	/*we throw an error if at least one of them fails*/
+	for i := 0; i < reps; i++ {
+		select {
+		case <-channel:
+		case err := <-errors:
 			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 			return
 		}
+	}
+
+	for _, body := range salesBody.Sales {
 
 		var sale model.Sale
 		sale, err := sales.SaveSale(body.SeatId, body.Dni, body.Name, body.Surname, token)
