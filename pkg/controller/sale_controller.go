@@ -84,25 +84,39 @@ func CreateSales(c *gin.Context) {
 		}
 	}
 
-	for _, body := range salesBody.Sales {
+	saleChannel := make(chan model.Sale)
 
-		var sale model.Sale
-		sale, err := sales.SaveSale(body.SeatId, body.Dni, body.Name, body.Surname, token)
-		if err != nil {
+	for i := 0; i < reps; i++ {
+		body := salesBody.Sales[i]
+		go func() {
+			var sale model.Sale
+			sale, err := sales.SaveSale(body.SeatId, body.Dni, body.Name, body.Surname, token)
+			if err != nil {
+				errors <- err
+			}
+			saleChannel <- sale
+
+		}()
+	}
+
+	var saleResponse saleResponseBody
+	for i := 0; i < reps; i++ {
+		select {
+		case sale := <-saleChannel:
+			saleResponse.ID = sale.ID
+			saleResponse.Price = sale.Price
+			saleResponse.Passenger = sale.Passenger
+			saleResponse.ReservationDate = sale.ReservationDate
+			saleResponse.SeatID = sale.SeatID
+
+			salesResponses = append(salesResponses, saleResponse)
+		case err := <-errors:
 			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 			return
 		}
-
-		var saleResponse saleResponseBody
-		saleResponse.ID = sale.ID
-		saleResponse.Price = sale.Price
-		saleResponse.Passenger = sale.Passenger
-		saleResponse.ReservationDate = sale.ReservationDate
-		saleResponse.SeatID = sale.SeatID
-
-		salesResponses = append(salesResponses, saleResponse)
 	}
 
+	//
 	var response salesResponseBody
 	response.Sales = salesResponses
 	response.Token = token
