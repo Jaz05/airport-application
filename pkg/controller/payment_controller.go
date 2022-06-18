@@ -34,6 +34,8 @@ func CreatePayment(c *gin.Context) {
 		return
 	}
 
+	// TODO: esta bien identificar a las sales por token y no por id?
+	// si una persona hacer varias reservas recibe distintos tokens
 	salesList, err := sales.GetSalesByToken(body.Token)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
