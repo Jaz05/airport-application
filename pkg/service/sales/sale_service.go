@@ -21,13 +21,15 @@ func BookFlightSeat(seatId int) (model.Seat, error) {
 		return seat, errors.New("seat is not available")
 	}
 
-	//TODO: Check errors
-	database.GetClient().Model(&seat).Update("status", model.Reserved)
+	r := database.GetClient().Model(&seat).Update("status", model.Reserved)
+	if r.Error != nil {
+		return seat, errors.New("error updating seat status")
+	}
 	return seat, nil
 }
 
 // TODO: ISSUE: que pasa si falla el savesale? te queda el asiento reservado pero sin ninguna sale asociada
-// SaveSale TODO: pasarle el body directamente? mover la logica de ver si el passenger existe a otra service que se ejecute antes?
+
 func SaveSale(seatId int, pDni int64, pName string, pSurname string, token string) (model.Sale, error) {
 	// fetch passenger and seat
 	var seat model.Seat
