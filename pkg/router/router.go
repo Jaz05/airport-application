@@ -18,6 +18,11 @@ func SetupRouter() *gin.Engine {
 			flights.GET("", controller.GetFlights)
 		}
 
+		seats := v1.Group("/seats")
+		{
+			seats.GET("", controller.GetSeats)
+		}
+
 		sales := v1.Group("/sales")
 		{
 			sales.POST("", controller.CreateSales)
@@ -28,12 +33,6 @@ func SetupRouter() *gin.Engine {
 		{
 			payment.POST("", controller.CreatePayment)
 		}
-
-		seats := v1.Group("/seats")
-		{
-			seats.GET("", controller.GetSeats)
-		}
-
 	}
 
 	return r

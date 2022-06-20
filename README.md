@@ -1,9 +1,5 @@
 # airport-application
 
-## Documentacion
-
-http://localhost:8080/swagger/index.html
-
 ## Prerequisitos
 
 ### Instalar GO
@@ -52,28 +48,20 @@ Dentro del directorio cmd/app donde se encuentra main.go ejecutar
 
 ## Endpoints
 
-### Realizar reserva de un pasaje
+http://localhost:8080/swagger/index.html
 
-`POST http://localhost:8080/sales`
+## Casos de Uso
 
-<details>
-<summary>Request Body</summary>
-<pre>
-{
-   "name":"Juan",
-   "surname":"adsd",
-   "dni":1783612,
-   "seat_id":4
-}
-</pre>
-</details>
+### Obtener vuelos
+Utilizando `GET /flights` se obtienen los vuelos.
 
+### Obtener asientos
+Utilizando `GET /seats` se obtienen los asientos correspondientes al los vuelos entre destinos.
 
-<details>
-<summary>Response</summary>
-<pre>
-{
-	"sale_id":
-}
-</pre>
-</details>
+### Reservar asientos
+Utilizando `POST /sales` se reservan multiples asientos.
+Los asientos quedan en estado **reservado** por un tiempo determinado (actualmente 5 minutos).
+
+### Pagar reserva
+Para completar la reserva, se debe realizar el pago de la misma.
+Se utiliza el Token de la reserva en un request `POST /payments`
