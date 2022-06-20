@@ -54,6 +54,7 @@ func first(replicas ...Fetch) Result {
 
 // TODO: manejo de errores dentro de una goroutine?
 // TODO: nice to have, pasar por parametro cuantas replicas se hacen
+
 func FanInFetch(queries ...Fetch) ([]Result, error) {
 	// varios llamados concurrentes a apis que tardan un tiempo variable usando goroutines,
 	// me quedo con la respuesta mas rapida de cada fetch lanzando varios fetchs iguales con mas goroutines
