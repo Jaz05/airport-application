@@ -10,12 +10,16 @@ definitions:
       token:
         type: string
     type: object
-  controller.paymentResponseBody:
+  controller.seatResponse:
     properties:
-      result:
+      id:
+        type: integer
+      position:
         type: string
+      price:
+        type: number
     type: object
-  controller.saleRequestBody:
+  dto.SaleRequestBody:
     properties:
       dni:
         type: integer
@@ -26,7 +30,7 @@ definitions:
       surname:
         type: string
     type: object
-  controller.saleResponseBody:
+  dto.SaleResponseBody:
     properties:
       id:
         type: integer
@@ -39,18 +43,18 @@ definitions:
       seat_id:
         type: integer
     type: object
-  controller.salesRequestBody:
+  dto.SalesRequestBody:
     properties:
       sales:
         items:
-          $ref: '#/definitions/controller.saleRequestBody'
+          $ref: '#/definitions/dto.SaleRequestBody'
         type: array
     type: object
-  controller.salesResponseBody:
+  dto.SalesResponseBody:
     properties:
       sales:
         items:
-          $ref: '#/definitions/controller.saleResponseBody'
+          $ref: '#/definitions/dto.SaleResponseBody'
         type: array
       token:
         type: string
@@ -105,61 +109,6 @@ definitions:
       name:
         type: string
     type: object
-  model.Sale:
-    properties:
-      id:
-        type: integer
-      passenger:
-        $ref: '#/definitions/model.Passenger'
-      passengerID:
-        type: integer
-      price:
-        type: number
-      reservationDate:
-        type: string
-      saleDate:
-        $ref: '#/definitions/sql.NullTime'
-      seat:
-        $ref: '#/definitions/model.Seat'
-      seatID:
-        type: integer
-      token:
-        type: string
-    type: object
-  model.Seat:
-    properties:
-      flight:
-        $ref: '#/definitions/model.Flight'
-      flightID:
-        type: integer
-      id:
-        type: integer
-      seatLocation:
-        type: string
-      status:
-        type: string
-      type:
-        $ref: '#/definitions/model.SeatType'
-      typeID:
-        type: integer
-    type: object
-  model.SeatType:
-    properties:
-      category:
-        type: integer
-      id:
-        type: integer
-      multiplier:
-        type: number
-    type: object
-  sql.NullTime:
-    properties:
-      time:
-        type: string
-      valid:
-        description: Valid is true if Time is not NULL
-        type: boolean
-    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -169,6 +118,11 @@ info:
 paths:
   /flights:
     get:
+      parameters:
+      - description: Flight destination ID
+        in: query
+        name: destination
+        type: string
       produces:
       - application/json
       responses:
@@ -178,15 +132,15 @@ paths:
             items:
               $ref: '#/definitions/model.Flight'
             type: array
-      summary: Get all flights
+      summary: Get Flights
       tags:
-      - flights
+      - Flights
   /payment:
     post:
       consumes:
       - application/json
       parameters:
-      - description: request body
+      - description: Request Body
         in: body
         name: body
         required: true
@@ -195,64 +149,76 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: ""
+        "400":
+          description: Bad Request
           schema:
-            $ref: '#/definitions/controller.paymentResponseBody'
+            additionalProperties:
+              type: string
+            type: object
       summary: Creates a payment
       tags:
-      - payment
+      - Payments
   /sales:
     get:
       parameters:
-      - description: Sale token
+      - description: Sale Token
         in: query
         name: token
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            items:
-              items:
-                $ref: '#/definitions/model.Sale'
-              type: array
-            type: array
-      summary: Get sales by token
+            $ref: '#/definitions/dto.SalesResponseBody'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get Sales by Token
       tags:
-      - sales
+      - Sales
     post:
       consumes:
       - application/json
       parameters:
-      - description: request body
+      - description: Request Body
         in: body
         name: body
         required: true
         schema:
-          $ref: '#/definitions/controller.salesRequestBody'
+          $ref: '#/definitions/dto.SalesRequestBody'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/controller.salesResponseBody'
-      summary: Creates a sale
+            $ref: '#/definitions/dto.SalesResponseBody'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create Sales
       tags:
-      - sales
+      - Sales
   /seats:
     get:
       parameters:
-      - description: origin ID
+      - description: Flight origin ID
         in: query
         name: origin
         required: true
         type: integer
-      - description: destination ID
+      - description: Flight destination ID
         in: query
         name: destination
         required: true
@@ -264,9 +230,9 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/model.Flight'
+              $ref: '#/definitions/controller.seatResponse'
             type: array
-      summary: Get all seats
+      summary: Get Seats by Origin and Destination
       tags:
-      - seats
+      - Seats
 swagger: "2.0"

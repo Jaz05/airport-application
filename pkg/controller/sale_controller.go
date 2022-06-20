@@ -9,13 +9,14 @@ import (
 )
 
 // CreateSales godoc
-// @Summary      Creates a sale
-// @Tags         sales
-// @Accept       json
-// @Produce      json
-// @Param body body salesRequestBody true "request body"
-// @Success      200  {object}  salesResponseBody
-// @Router       /sales [post]
+// @Summary  Create Sales
+// @Tags     Sales
+// @Accept   json
+// @Produce  json
+// @Param    body  body      dto.SalesRequestBody  true  "Request Body"
+// @Success  200   {object}  dto.SalesResponseBody
+// @Failure  400   {object}  map[string]string
+// @Router   /sales [post]
 func CreateSales(c *gin.Context) {
 	var salesBody dto.SalesRequestBody
 	if err := c.BindJSON(&salesBody); err != nil {
@@ -50,12 +51,13 @@ func CreateSales(c *gin.Context) {
 }
 
 // GetSalesByToken godoc
-// @Summary      Get sales by token
-// @Tags         sales
-// @Produce      json
-// @Param        token   query int  true  "Sale token"
-// @Success      200  {array}  []model.Sale
-// @Router       /sales [get]
+// @Summary  Get Sales by Token
+// @Tags     Sales
+// @Produce  json
+// @Param    token  query     string  true  "Sale Token"
+// @Success  200    {object}  dto.SalesResponseBody
+// @Failure  400    {object}  map[string]string
+// @Router   /sales [get]
 func GetSalesByToken(c *gin.Context) {
 	token := c.Request.URL.Query().Get("token")
 	salesList, err := sales.GetSalesByToken(token)

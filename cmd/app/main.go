@@ -8,11 +8,11 @@ import (
 	"airport/pkg/router"
 )
 
-// @title           Airport Application
-// @version         1.0
-// @description     Airport Rest API
+// @title        Airport Application
+// @version      1.0
+// @description  Airport Rest API
 
-// @host      localhost:8080
+// @host  localhost:8080
 // @BasePath
 
 func main() {

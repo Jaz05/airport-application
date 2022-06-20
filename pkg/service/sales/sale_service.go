@@ -70,7 +70,10 @@ func GetSalesByToken(token string) ([]model.Sale, error) {
 	var sales []model.Sale
 	r := database.GetClient().Where("sales.token = ?", token).Preload(clause.Associations).Find(&sales)
 	if r.Error != nil {
-		return sales, errors.New("sale not found")
+		return sales, errors.New("error getting sales")
+	}
+	if len(sales) < 1 {
+		return sales, errors.New("sales not found")
 	}
 
 	return sales, nil

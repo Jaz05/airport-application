@@ -22,9 +22,17 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "flights"
+                    "Flights"
                 ],
-                "summary": "Get all flights",
+                "summary": "Get Flights",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Flight destination ID",
+                        "name": "destination",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -47,12 +55,12 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "payment"
+                    "Payments"
                 ],
                 "summary": "Creates a payment",
                 "parameters": [
                     {
-                        "description": "request body",
+                        "description": "Request Body",
                         "name": "body",
                         "in": "body",
                         "required": true,
@@ -62,10 +70,16 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controller.paymentResponseBody"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -77,13 +91,13 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "sales"
+                    "Sales"
                 ],
-                "summary": "Get sales by token",
+                "summary": "Get Sales by Token",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "Sale token",
+                        "type": "string",
+                        "description": "Sale Token",
                         "name": "token",
                         "in": "query",
                         "required": true
@@ -93,12 +107,15 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/model.Sale"
-                                }
+                            "$ref": "#/definitions/dto.SalesResponseBody"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
                             }
                         }
                     }
@@ -112,17 +129,17 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "sales"
+                    "Sales"
                 ],
-                "summary": "Creates a sale",
+                "summary": "Create Sales",
                 "parameters": [
                     {
-                        "description": "request body",
+                        "description": "Request Body",
                         "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controller.salesRequestBody"
+                            "$ref": "#/definitions/dto.SalesRequestBody"
                         }
                     }
                 ],
@@ -130,7 +147,16 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controller.salesResponseBody"
+                            "$ref": "#/definitions/dto.SalesResponseBody"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -142,20 +168,20 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "seats"
+                    "Seats"
                 ],
-                "summary": "Get all seats",
+                "summary": "Get Seats by Origin and Destination",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "origin ID",
+                        "description": "Flight origin ID",
                         "name": "origin",
                         "in": "query",
                         "required": true
                     },
                     {
                         "type": "integer",
-                        "description": "destination ID",
+                        "description": "Flight destination ID",
                         "name": "destination",
                         "in": "query",
                         "required": true
@@ -167,7 +193,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/model.Flight"
+                                "$ref": "#/definitions/controller.seatResponse"
                             }
                         }
                     }
@@ -193,15 +219,21 @@ const docTemplate = `{
                 }
             }
         },
-        "controller.paymentResponseBody": {
+        "controller.seatResponse": {
             "type": "object",
             "properties": {
-                "result": {
+                "id": {
+                    "type": "integer"
+                },
+                "position": {
                     "type": "string"
+                },
+                "price": {
+                    "type": "number"
                 }
             }
         },
-        "controller.saleRequestBody": {
+        "dto.SaleRequestBody": {
             "type": "object",
             "properties": {
                 "dni": {
@@ -218,7 +250,7 @@ const docTemplate = `{
                 }
             }
         },
-        "controller.saleResponseBody": {
+        "dto.SaleResponseBody": {
             "type": "object",
             "properties": {
                 "id": {
@@ -238,24 +270,24 @@ const docTemplate = `{
                 }
             }
         },
-        "controller.salesRequestBody": {
+        "dto.SalesRequestBody": {
             "type": "object",
             "properties": {
                 "sales": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/controller.saleRequestBody"
+                        "$ref": "#/definitions/dto.SaleRequestBody"
                     }
                 }
             }
         },
-        "controller.salesResponseBody": {
+        "dto.SalesResponseBody": {
             "type": "object",
             "properties": {
                 "sales": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/controller.saleResponseBody"
+                        "$ref": "#/definitions/dto.SaleResponseBody"
                     }
                 },
                 "token": {
@@ -337,90 +369,6 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
-                }
-            }
-        },
-        "model.Sale": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "passenger": {
-                    "$ref": "#/definitions/model.Passenger"
-                },
-                "passengerID": {
-                    "type": "integer"
-                },
-                "price": {
-                    "type": "number"
-                },
-                "reservationDate": {
-                    "type": "string"
-                },
-                "saleDate": {
-                    "$ref": "#/definitions/sql.NullTime"
-                },
-                "seat": {
-                    "$ref": "#/definitions/model.Seat"
-                },
-                "seatID": {
-                    "type": "integer"
-                },
-                "token": {
-                    "type": "string"
-                }
-            }
-        },
-        "model.Seat": {
-            "type": "object",
-            "properties": {
-                "flight": {
-                    "$ref": "#/definitions/model.Flight"
-                },
-                "flightID": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "seatLocation": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "type": {
-                    "$ref": "#/definitions/model.SeatType"
-                },
-                "typeID": {
-                    "type": "integer"
-                }
-            }
-        },
-        "model.SeatType": {
-            "type": "object",
-            "properties": {
-                "category": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "multiplier": {
-                    "type": "number"
-                }
-            }
-        },
-        "sql.NullTime": {
-            "type": "object",
-            "properties": {
-                "time": {
-                    "type": "string"
-                },
-                "valid": {
-                    "description": "Valid is true if Time is not NULL",
-                    "type": "boolean"
                 }
             }
         }

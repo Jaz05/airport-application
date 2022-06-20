@@ -2,7 +2,6 @@ package controller
 
 import (
 	service "airport/pkg/service/seats"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,13 +12,13 @@ type seatResponse struct {
 }
 
 // GetSeats godoc
-// @Summary      Get all seats
-// @Tags         seats
-// @Produce      json
-// @Param        origin   query int  true  "origin ID"
-// @Param        destination   query int  true  "destination ID"
-// @Success      200  {array}  model.Flight
-// @Router       /seats [get]
+// @Summary  Get Seats by Origin and Destination
+// @Tags     Seats
+// @Produce  json
+// @Param    origin       query    int  true  "Flight origin ID"
+// @Param    destination  query    int  true  "Flight destination ID"
+// @Success  200          {array}  seatResponse
+// @Router   /seats [get]
 func GetSeats(c *gin.Context) {
 	origin := c.Request.URL.Query().Get("origin")
 	destination := c.Request.URL.Query().Get("destination")

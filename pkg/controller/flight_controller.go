@@ -8,11 +8,12 @@ import (
 )
 
 // GetFlights godoc
-// @Summary      Get all flights
-// @Tags         flights
-// @Produce      json
-// @Success      200  {array}  model.Flight
-// @Router       /flights [get]
+// @Summary  Get Flights
+// @Tags     Flights
+// @Produce  json
+// @Param    destination  query    string  false  "Flight destination ID"
+// @Success  200          {array}  model.Flight
+// @Router   /flights [get]
 func GetFlights(c *gin.Context) {
 	destination := c.Request.URL.Query().Get("destination")
 	if len(destination) > 0 {
