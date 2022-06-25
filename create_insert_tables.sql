@@ -229,12 +229,4 @@ INSERT INTO `airport`.`seats` (`id`, `flight_id`, `seat_location`, `type_id`, `s
 
 COMMIT;
 
--- -----------------------------------------------------
--- Data for table `airport`.`passengers`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `airport`;
-INSERT INTO `airport`.`passengers` (`id`, `dni`, `name`, `sur_name`) VALUES (1, 1783612, 'Juan', 'Perez');
-INSERT INTO `airport`.`passengers` (`id`, `dni`, `name`, `sur_name`) VALUES (2, 200000,'Test', 'Test');
 
-COMMIT;

@@ -16,8 +16,8 @@ type Result struct {
 
 type Fetch func() Result
 
-// FakeFetch returns a fetch func with url set via parameter
-func FakeFetch(url string) Fetch {
+// CreateFetch returns a fetch func with url set via parameter
+func CreateFetch(url string) Fetch {
 	return func() Result {
 		delay := rand.Intn(2) + 1
 
